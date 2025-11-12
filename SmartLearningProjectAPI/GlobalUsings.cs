@@ -1,0 +1,41 @@
+﻿global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.Filters;
+global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using Microsoft.AspNetCore.Mvc.Rendering;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.OpenApi.Models;
+global using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+global using Microsoft.AspNetCore.Authentication.Cookies;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Collections;
+global using System.Collections.Concurrent; 
+global using System.Collections.Generic;
+global using System.Threading.Tasks;
+global using System.Threading;
+global using System.Linq;
+global using System.Linq.Expressions;
+global using System.Net;
+global using System.Text.Json;
+global using System.Diagnostics;
+global using System.Security.Claims;
+global using System.Text;
+global using System.IdentityModel.Tokens.Jwt;
+global using Serilog;
+global using AutoMapper;
+//global 
+//global 
+//global 
+//global 
+//global
+global using SmartLearning.Application.GenericInterfaces;
+global using SmartLearning.Infrastructure.Data;
+global using SmartLearning.Infrastructure.Repositories;
+global using SmartLearningProjectAPI.Middlewares;
