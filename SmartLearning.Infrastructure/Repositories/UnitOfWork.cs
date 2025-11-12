@@ -1,39 +1,40 @@
 ﻿
 
-
 namespace SmartLearning.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ITIEntity _context;
-        private Hashtable _repositories;
+        private readonly ConcurrentDictionary<string, object> _repositories;
         private IDbContextTransaction _transaction;
 
         public UnitOfWork(ITIEntity context)
         {
             _context = context;
+            _repositories = new ConcurrentDictionary<string, object>();
         }
 
         public IGenericRepository<T> Repository<T>() where T : class
         {
-            if (_repositories == null)
-                _repositories = new Hashtable();
+            var typeName = typeof(T).Name;
 
-            var type = typeof(T).Name;
-
-            if (!_repositories.ContainsKey(type))
+            var repository = _repositories.GetOrAdd(typeName, (t) =>
             {
-                var repositoryType = typeof(GenericRepository<>);
-                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), _context);
-                _repositories.Add(type, repositoryInstance);
-            }
+                var repoType = typeof(GenericRepository<>).MakeGenericType(typeof(T));
+                return Activator.CreateInstance(repoType, _context)!;
+            });
 
-            return (IGenericRepository<T>)_repositories[type];
+            return (IGenericRepository<T>)repository;
         }
 
         public int Complete()
         {
             return _context.SaveChanges();
+        }
+
+        public async Task<int> CompleteAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public void Dispose()
@@ -44,19 +45,24 @@ namespace SmartLearning.Infrastructure.Repositories
 
         public void BeginTransaction()
         {
+            if (_transaction != null) throw new InvalidOperationException("Transaction already started.");
             _transaction = _context.Database.BeginTransaction();
         }
 
         public void CommitTransaction()
         {
-            _transaction?.Commit();
-            _transaction?.Dispose();
+            if (_transaction == null) throw new InvalidOperationException("No transaction started.");
+            _transaction.Commit();
+            _transaction.Dispose();
+            _transaction = null;
         }
 
         public void RollbackTransaction()
         {
-            _transaction?.Rollback();
-            _transaction?.Dispose();
+            if (_transaction == null) throw new InvalidOperationException("No transaction started.");
+            _transaction.Rollback();
+            _transaction.Dispose();
+            _transaction = null;
         }
     }
 }
