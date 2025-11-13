@@ -5,13 +5,11 @@
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        public int Hours { get; set; }
+        public string Description { get; set; } = string.Empty;
 
-        public ICollection<Student> Students { get; set; } = new List<Student>();
-
-        public ICollection<InstructorCourse> InstructorCourses { get; set; } = new List<InstructorCourse>();
+        
 
     }
 }

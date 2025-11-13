@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Application.GenericInterfaces;
-
 namespace SmartLearning.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
@@ -14,7 +12,7 @@ namespace SmartLearning.Infrastructure.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public IQueryable<T> GetAll(params Expression<Func<T, object>>[] includes)
+        public async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet.AsNoTracking();
             if (includes != null)
@@ -22,15 +20,15 @@ namespace SmartLearning.Infrastructure.Repositories
                 foreach (var include in includes)
                     query = query.Include(include);
             }
-            return query;
+            return await query.ToListAsync();
         }
 
-        public T GetById(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.FindAsync(id);
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public async Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet.Where(predicate);
             if (includes != null)
@@ -38,12 +36,12 @@ namespace SmartLearning.Infrastructure.Repositories
                 foreach (var include in includes)
                     query = query.Include(include);
             }
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _dbSet.Add(entity);
+            await _dbSet.AddAsync(entity);
         }
 
         public void Update(T entity)
