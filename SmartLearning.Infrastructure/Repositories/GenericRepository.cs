@@ -53,5 +53,21 @@ namespace SmartLearning.Infrastructure.Repositories
         {
             _dbSet.Remove(entity);
         }
+
+        public async Task<IReadOnlyList<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> includeFunc)
+        {
+            IQueryable<T> query = _dbSet.AsNoTracking();
+            query = includeFunc(query);
+            return await query.ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> includeFunc = null)
+        {
+            IQueryable<T> query = _dbSet.Where(predicate);
+
+            if (includeFunc != null)
+                query = includeFunc(query);
+            return await query.ToListAsync();
+        }
     }
 }

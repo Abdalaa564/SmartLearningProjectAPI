@@ -8,5 +8,8 @@
         Task AddAsync(T entity);
         void Update(T entity);
         void Remove(T entity);
+        Task<IReadOnlyList<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> includeFunc);
+
+        Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> includeFunc = null);
     }
 }
