@@ -108,21 +108,21 @@ namespace SmartLearning.Infrastructure.Data
                 .HasOne(g => g.Quiz)
                 .WithMany(q => q.Grades)
                 .HasForeignKey(g => g.Quize_Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Grades ↔ Student(User) 1 → M
             modelBuilder.Entity<Grades>()
                 .HasOne(g => g.Student)
                 .WithMany(u => u.Grades)
                 .HasForeignKey(g => g.Std_Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Grades ↔ Course 1 → M
             modelBuilder.Entity<Grades>()
                 .HasOne(g => g.Course)
                 .WithMany(c => c.Grades)
                 .HasForeignKey(g => g.Course_Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             // Questions ↔ StudentAnswer (1 → M)
