@@ -3,8 +3,13 @@ namespace SmartLearning.Core.Model
 {
     public class Quiz
     {
+        [Key]
         public int Quiz_Id { get; set; }
+
+        [Required]
         public int Lesson_Id { get; set; }
+
+        [Required, MaxLength(100)]
         public string Quiz_Name { get; set; } = string.Empty;
         public int TotalMarks { get; set; }
         public int Duration { get; set; }

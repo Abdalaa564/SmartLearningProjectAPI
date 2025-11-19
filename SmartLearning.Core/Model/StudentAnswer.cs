@@ -2,9 +2,16 @@
 {
     public class StudentAnswer
     {
+        [Key]
         public int Id { get; set; }
+
+        [Required]
         public string User_Id { get; set; } = string.Empty;
+
+        [Required]
         public int Quiz_Id { get; set; }
+
+        [Required]
         public int Choice_Id { get; set; }
         public bool Is_Correct { get; set; }
 
