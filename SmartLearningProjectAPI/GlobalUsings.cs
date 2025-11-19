@@ -29,13 +29,13 @@ global using System.Security.Claims;
 global using System.Text;
 global using System.IdentityModel.Tokens.Jwt;
 global using Serilog;
-global using AutoMapper;
-//global 
-//global 
-//global 
-//global 
-//global
+
+global using SmartLearning.Application.DTOs;
+global using SmartLearning.Core.Model;
 global using SmartLearning.Application.GenericInterfaces;
 global using SmartLearning.Infrastructure.Data;
 global using SmartLearning.Infrastructure.Repositories;
 global using SmartLearningProjectAPI.Middlewares;
+global using SmartLearning.Application.Interfaces;
+//global 
+//global

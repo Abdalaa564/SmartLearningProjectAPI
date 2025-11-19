@@ -18,25 +18,25 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 // [Authoriz] Add JWT Authentication
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    options.SaveToken = true;
-//    options.RequireHttpsMetadata = false;
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = true,
-//        ValidAudience = builder.Configuration["JWT:ValidAudiance"],
-//        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-//    };
-//});
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:ValidAudiance"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
 
 
 // Add services to the container.
@@ -45,46 +45,46 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddSwaggerGen(swagger =>
-//{
-//    swagger.SwaggerDoc("v1", new OpenApiInfo
-//    {
-//        Version = "v1",
-//        Title = "Demo API",
-//        Description = "ITI Project"
-//    });
+builder.Services.AddSwaggerGen(swagger =>
+{
+    swagger.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Demo API",
+        Description = "ITI Project"
+    });
 
-//    swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        Name = "Authorization",
-//        Type = SecuritySchemeType.ApiKey,
-//        Scheme = "Bearer",
-//        BearerFormat = "JWT",
-//        In = ParameterLocation.Header,
-//        Description = "Enter 'Bearer' [space] then your token.\r\n\r\nExample: \"Bearer eyJhbGciOi...\""
-//    });
+    swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] then your token.\r\n\r\nExample: \"Bearer eyJhbGciOi...\""
+    });
 
-//    swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-//                {
-//                    {
-//                        new OpenApiSecurityScheme
-//                        {
-//                            Reference = new OpenApiReference
-//                            {
-//                                Type = ReferenceType.SecurityScheme,
-//                                Id = "Bearer"
-//                            }
-//                        },
-//                        new string[] { }
-//                    }
-//                });
-//});
+    swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+});
 
-//builder.Services.AddAuthorization(Options =>
-//{
-//    Options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-//    Options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
-//});
+builder.Services.AddAuthorization(Options =>
+{
+    Options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+    Options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+});
 
 
 var app = builder.Build();

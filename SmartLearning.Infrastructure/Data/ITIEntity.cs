@@ -25,7 +25,7 @@ namespace SmartLearning.Infrastructure.Data
 
             base.OnModelCreating(modelBuilder);
 
-            // Course ↔ Instructor (User) (1 → 1)
+            // Course ↔ Instructor (User) (1 → M)
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Courses)
@@ -121,19 +121,23 @@ namespace SmartLearning.Infrastructure.Data
             modelBuilder.Entity<StudentAnswer>()
                 .HasOne(sa => sa.Choice)
                 .WithMany()
-                .HasForeignKey(sa => sa.Choice_Id);
+                .HasForeignKey(sa => sa.Choice_Id)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Questions ↔ StudentAnswer (1 → M)
             modelBuilder.Entity<StudentAnswer>()
                 .HasOne(sa => sa.Quiz)
                 .WithMany(q => q.StudentAnswers)
-                .HasForeignKey(sa => sa.Quiz_Id);
+                .HasForeignKey(sa => sa.Quiz_Id)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Questions ↔ StudentAnswer (1 → M)
             modelBuilder.Entity<StudentAnswer>()
                 .HasOne(sa => sa.User)
                 .WithMany()
-                .HasForeignKey(sa => sa.User_Id);
+                .HasForeignKey(sa => sa.User_Id)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             // Attendance ↔ Lessons (M → M)
             modelBuilder.Entity<Attendance>()
