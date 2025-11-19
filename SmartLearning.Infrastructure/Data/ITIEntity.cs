@@ -1,4 +1,6 @@
 ﻿
+using SmartLearning.Core.Model;
+
 namespace SmartLearning.Infrastructure.Data
 {
     public class ITIEntity : IdentityDbContext<ApplicationUser>
@@ -10,6 +12,7 @@ namespace SmartLearning.Infrastructure.Data
         public ITIEntity(DbContextOptions options) : base(options)
         {
         }
-        
+
+
     }
 }
