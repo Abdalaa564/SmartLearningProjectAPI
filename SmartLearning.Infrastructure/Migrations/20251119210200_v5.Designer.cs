@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartLearning.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using SmartLearning.Infrastructure.Data;
 namespace SmartLearning.Infrastructure.Migrations
 {
     [DbContext(typeof(ITIEntity))]
-    partial class ITIEntityModelSnapshot : ModelSnapshot
+    [Migration("20251119210200_v5")]
+    partial class v5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,9 +169,6 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CustomNumberId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)

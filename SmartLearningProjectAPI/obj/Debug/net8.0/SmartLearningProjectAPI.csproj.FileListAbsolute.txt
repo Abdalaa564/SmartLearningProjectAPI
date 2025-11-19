@@ -2,10 +2,6 @@ F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\appsettings.json
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.staticwebassets.endpoints.json
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.exe
-F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.deps.json
-F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.runtimeconfig.json
-F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.dll
-F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.pdb
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\AutoMapper.dll
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\Azure.Core.dll
@@ -177,5 +173,9 @@ F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\obj
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\obj\Debug\net8.0\SmartLearningProjectAPI.dll
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\obj\Debug\net8.0\refint\SmartLearningProjectAPI.dll
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\obj\Debug\net8.0\SmartLearningProjectAPI.pdb
+F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.deps.json
+F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.runtimeconfig.json
+F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.dll
+F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\bin\Debug\net8.0\SmartLearningProjectAPI.pdb
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\obj\Debug\net8.0\SmartLearningProjectAPI.genruntimeconfig.cache
 F:\ITI\Final Project Backend\SmartLearningProjectAPI\SmartLearningProjectAPI\obj\Debug\net8.0\ref\SmartLearningProjectAPI.dll

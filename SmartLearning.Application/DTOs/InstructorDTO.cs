@@ -11,5 +11,6 @@ namespace SmartLearning.Application.DTOs
         public double? Rating { get; set; }
         public string PhoneNumber { get; set; }
         public string YoutubeChannelUrl { get; set; }
+        public int? CustomNumberId { get; set; }
     }
 }
