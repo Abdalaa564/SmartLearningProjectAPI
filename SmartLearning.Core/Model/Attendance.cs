@@ -8,12 +8,14 @@ namespace SmartLearning.Core.Model
         public DateOnly Attendance_Date { get; set; }     // DateTime
         public DateTime CheckIn { get; set; }
         public DateTime? CheckOut { get; set; }
+        public int Lesson_Id { get; set; }
+        public Lessons Lesson { get; set; } = null!;
 
         [Required]
         public string User_Id { get; set; } = string.Empty;
 
         public ApplicationUser User { get; set; } = null!;
 
-        public ICollection<Lessons> Lessons { get; set; } = new List<Lessons>();
+        //public ICollection<Lessons> Lessons { get; set; } = new List<Lessons>();
     }
 }

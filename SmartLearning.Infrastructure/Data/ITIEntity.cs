@@ -38,14 +38,14 @@ namespace SmartLearning.Infrastructure.Data
                 .WithMany(c => c.Units)
                 .HasForeignKey(u => u.Crs_Id);
 
-            //Course ↔ Enrollment (Many-to-Many)
+            //Course ↔ Enrollment (Many-to-1)
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Course)
                 .WithMany(c => c.Enrollments)
                 .HasForeignKey(e => e.Crs_Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Course ↔ Enrollment (Many-to-Many)
+            //Course ↔ Enrollment (Many-to-1)
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.User)
                 .WithMany(u => u.Enrollments)
@@ -70,7 +70,7 @@ namespace SmartLearning.Infrastructure.Data
                 .WithMany(l => l.Resources)
                 .HasForeignKey(r => r.Lesson_Id);
 
-            // Lessons ↔ Rating (1 → M)
+            // Lessons ↔ Rating (M → M)
             modelBuilder.Entity<Rating>()
                 .HasKey(r => new { r.Lesson_Id, r.User_Id }); // Composite Key
 
@@ -92,7 +92,7 @@ namespace SmartLearning.Infrastructure.Data
                 .WithMany(qz => qz.Questions)
                 .HasForeignKey(q => q.Quiz_Id);
 
-
+            // Convert enum to string in DB
             modelBuilder.Entity<Questions>()
                 .Property(q => q.Question_Type)
                 .HasConversion<string>();
@@ -110,10 +110,18 @@ namespace SmartLearning.Infrastructure.Data
                 .HasForeignKey(g => g.Quize_Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Grades ↔ Student(User) 1 → M
             modelBuilder.Entity<Grades>()
                 .HasOne(g => g.Student)
                 .WithMany(u => u.Grades)
                 .HasForeignKey(g => g.Std_Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Grades ↔ Course 1 → M
+            modelBuilder.Entity<Grades>()
+                .HasOne(g => g.Course)
+                .WithMany(c => c.Grades)
+                .HasForeignKey(g => g.Course_Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -140,20 +148,21 @@ namespace SmartLearning.Infrastructure.Data
 
 
             // Attendance ↔ Lessons (M → M)
-            modelBuilder.Entity<Attendance>()
-                .HasMany(a => a.Lessons)
-                .WithMany(l => l.Attendances)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AttendanceLessons",
-                    j => j.HasOne<Lessons>().WithMany().HasForeignKey("Lesson_Id"),
-                    j => j.HasOne<Attendance>().WithMany().HasForeignKey("Attendance_Id"),
-                    j =>
-                    {
-                        j.HasKey("Attendance_Id", "Lesson_Id");
-                        j.ToTable("AttendanceLessons");
-                    }
-                );
+            //modelBuilder.Entity<Attendance>()
+            //    .HasMany(a => a.Lessons)
+            //    .WithMany(l => l.Attendances)
+            //    .UsingEntity<Dictionary<string, object>>(
+            //        "AttendanceLessons",
+            //        j => j.HasOne<Lessons>().WithMany().HasForeignKey("Lesson_Id"),
+            //        j => j.HasOne<Attendance>().WithMany().HasForeignKey("Attendance_Id"),
+            //        j =>
+            //        {
+            //            j.HasKey("Attendance_Id", "Lesson_Id");
+            //            j.ToTable("AttendanceLessons");
+            //        }
+            //    );
 
+            // Attendance (PK)
             modelBuilder.Entity<Attendance>()
                 .HasKey(a => a.Attendance_Id);
 

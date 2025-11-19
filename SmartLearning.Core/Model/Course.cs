@@ -23,7 +23,7 @@ namespace SmartLearning.Core.Model
         //(M → 1)
         public ICollection<Unit> Units { get; set; } = new List<Unit>();
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();  // Course  Students (1 → M)
-        //public ICollection<Grades> Grades { get; set; } = new List<Grades>();
+        public ICollection<Grades> Grades { get; set; } = new List<Grades>();
 
     }
 }
