@@ -365,3 +365,7 @@ FodyWeavers.xsd
 # Added by request
 appsettings.json
 Migrations/
+SmartLearningProjectAPI/appsettings.json
+SmartLearningProjectAPI/appsettings.json
+**/appsettings.json
+**/appsettings.*.json

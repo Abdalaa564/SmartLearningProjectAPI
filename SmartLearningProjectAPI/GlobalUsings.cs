@@ -16,7 +16,7 @@ global using Microsoft.IdentityModel.Tokens;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Collections;
-global using System.Collections.Concurrent; 
+global using System.Collections.Concurrent;
 global using System.Collections.Generic;
 global using System.Threading.Tasks;
 global using System.Threading;
@@ -30,12 +30,12 @@ global using System.Text;
 global using System.IdentityModel.Tokens.Jwt;
 global using Serilog;
 
-global using SmartLearning.Application.DTOs;
+global using SmartLearningProjectAPI.Middlewares;
 global using SmartLearning.Core.Model;
+global using SmartLearning.Application.DTOs;
+global using SmartLearning.Application.Interfaces;
 global using SmartLearning.Application.GenericInterfaces;
 global using SmartLearning.Infrastructure.Data;
 global using SmartLearning.Infrastructure.Repositories;
-global using SmartLearningProjectAPI.Middlewares;
-global using SmartLearning.Application.Interfaces;
-//global 
+global using SmartLearning.Infrastructure.ExternalServices;
 //global
