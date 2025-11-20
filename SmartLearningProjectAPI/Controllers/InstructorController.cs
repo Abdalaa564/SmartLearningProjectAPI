@@ -19,7 +19,7 @@ namespace SmartLearningProjectAPI.Controllers
             => Ok(await _service.GetAllInstructorAsync());
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
             var result = await _service.GetByIdAsync(id);
             return result is null ? NotFound() : Ok(result);
@@ -35,14 +35,14 @@ namespace SmartLearningProjectAPI.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdateInstructorDto dto)
+        public async Task<IActionResult> Update(string id, UpdateInstructorDto dto)
         {
             var result = await _service.UpdateAsync(id, dto);
             return result ? Ok("Updated successfully") : NotFound();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _service.DeleteAsync(id);
             return result ? Ok("Instructor deleted") : NotFound();

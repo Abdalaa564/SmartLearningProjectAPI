@@ -1,6 +1,7 @@
 
 
 
+using SmartLearning.Application.Interfaces;
 using SmartLearning.Application.Mappings;
 using SmartLearning.Application.Services;
 
@@ -21,6 +22,16 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddAutoMapper(typeof(InstructorProfile));
 
+// course 
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddAutoMapper(typeof(CourseProfile));
+// Unit
+builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddAutoMapper(typeof(UnitProfile));
+
+// Lesson
+builder.Services.AddScoped<ILessonService, LessonsService>();
+builder.Services.AddAutoMapper(typeof(LessonsProfile));
 
 
 

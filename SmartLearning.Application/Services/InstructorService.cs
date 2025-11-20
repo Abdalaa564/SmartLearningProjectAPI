@@ -21,12 +21,12 @@ namespace SmartLearning.Application.Services
             return _mapper.Map<IEnumerable<CreateInstructorDto>>(instructors);
         }
 
-        public async Task<CreateInstructorDto?> GetByIdAsync(int customId)
+        public async Task<CreateInstructorDto?> GetByIdAsync(string id)
         {
             var repo = _unitOfWork.Repository<ApplicationUser>();
 
             // جلب المستخدم حسب CustomNumberId
-            var user = (await repo.FindAsync(u => u.CustomNumberId == customId)).FirstOrDefault();
+            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
 
             if (user == null) return null;
 
@@ -40,10 +40,10 @@ namespace SmartLearning.Application.Services
             return _mapper.Map<CreateInstructorDto>(instructor);
         }
 
-        public async Task<bool> UpdateAsync(int customId, UpdateInstructorDto dto)
+        public async Task<bool> UpdateAsync(string id, UpdateInstructorDto dto)
         {
             var repo = _unitOfWork.Repository<ApplicationUser>();
-            var user = (await repo.FindAsync(u => u.CustomNumberId == customId)).FirstOrDefault();
+            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
 
             if (user == null) return false;
 
@@ -53,11 +53,11 @@ namespace SmartLearning.Application.Services
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int customNumberId)
+        public async Task<bool> DeleteAsync(string id)
         {
             var repo = _unitOfWork.Repository<ApplicationUser>();
 
-            var user = (await repo.FindAsync(u => u.CustomNumberId == customNumberId)).FirstOrDefault();
+            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
             if (user == null) return false;
 
             var result = await _userManager.DeleteAsync(user);
