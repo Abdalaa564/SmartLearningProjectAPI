@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartLearningProjectAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b41a590a4c534b2be8cf8948cff2eca40c1fc0f5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93148a8d3e3a50a146615e597c460d5365baf6aa")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartLearningProjectAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartLearningProjectAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
