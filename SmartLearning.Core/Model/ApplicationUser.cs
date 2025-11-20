@@ -10,10 +10,7 @@ namespace SmartLearning.Core.Model
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
         public ICollection<Grades> Grades { get; set; } = new List<Grades>();
-
         // Instructor properties
-        public int CustomNumberId { get; set; }
-        public string? FullName { get; set; }
         public string? JobTitle { get; set; }
         public int? NumberOfStudents { get; set; }
         public double? Rating { get; set; }
