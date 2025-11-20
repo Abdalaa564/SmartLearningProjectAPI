@@ -1,5 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.CourseDto;
 
 namespace SmartLearning.Application.Mappings
 {

@@ -1,5 +1,4 @@
 ﻿
-
 namespace SmartLearning.Application.DTOs.CourseDto
 {
     public class UpdateCourseDto

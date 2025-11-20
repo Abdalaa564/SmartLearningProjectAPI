@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.UnitDto;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]

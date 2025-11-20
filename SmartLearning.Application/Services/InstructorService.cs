@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
+﻿
 namespace SmartLearning.Application.Services
 {
     public class InstructorService: IInstructorService

@@ -1,10 +1,4 @@
 ﻿
-
-
-
-
-
-
 namespace SmartLearning.Application.Services
 {
     public class CourseService : ICourseService

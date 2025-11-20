@@ -1,5 +1,4 @@
 ﻿
-
 namespace SmartLearning.Application.Interfaces
 {
     public interface IInstructorService
