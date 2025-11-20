@@ -1,4 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SmartLearning.Application.GenericInterfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SmartLearning.Application.Services
 {
@@ -21,18 +27,15 @@ namespace SmartLearning.Application.Services
             return _mapper.Map<IEnumerable<CreateInstructorDto>>(instructors);
         }
 
-        public async Task<CreateInstructorDto?> GetByIdAsync(int customId)
+        public async Task<CreateInstructorDto?> GetByIdAsync(string id)
         {
-            var repo = _unitOfWork.Repository<ApplicationUser>();
-
-            // جلب المستخدم حسب CustomNumberId
-            var user = (await repo.FindAsync(u => u.CustomNumberId == customId)).FirstOrDefault();
-
-            if (user == null) return null;
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null || !await _userManager.IsInRoleAsync(user, "Instructor"))
+                return null;
 
             return _mapper.Map<CreateInstructorDto>(user);
         }
-        public async Task<CreateInstructorDto> AddInstructorAsync(CreateInstructorDto dto)
+        public async Task<CreateInstructorDto> AddInstructorAsync(UpdateInstructorDto dto)
         {
             var instructor = _mapper.Map<ApplicationUser>(dto);
             await _unitOfWork.Repository<ApplicationUser>().AddAsync(instructor);
@@ -40,29 +43,24 @@ namespace SmartLearning.Application.Services
             return _mapper.Map<CreateInstructorDto>(instructor);
         }
 
-        public async Task<bool> UpdateAsync(int customId, UpdateInstructorDto dto)
+        public async Task<bool> UpdateAsync(string id, UpdateInstructorDto dto)
         {
-            var repo = _unitOfWork.Repository<ApplicationUser>();
-            var user = (await repo.FindAsync(u => u.CustomNumberId == customId)).FirstOrDefault();
-
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null) return false;
 
             _mapper.Map(dto, user);
-            await _unitOfWork.CompleteAsync();
+            await _userManager.UpdateAsync(user);
 
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int customNumberId)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var repo = _unitOfWork.Repository<ApplicationUser>();
-
-            var user = (await repo.FindAsync(u => u.CustomNumberId == customNumberId)).FirstOrDefault();
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null) return false;
 
-            var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded;
+            await _userManager.DeleteAsync(user);
+            return true;
         }
-
     }
 }

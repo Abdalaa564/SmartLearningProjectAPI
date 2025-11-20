@@ -10,16 +10,11 @@ namespace SmartLearning.Application.Mappings
     {
         public InstructorProfile()
         {
-            // Input DTO → Entity
-            CreateMap<CreateInstructorDto, ApplicationUser>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<ApplicationUser, CreateInstructorDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.UserName));
 
             CreateMap<UpdateInstructorDto, ApplicationUser>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.UserName, opt => opt.Ignore());
-
-            // Output Entity → DTO
-            CreateMap<ApplicationUser, CreateInstructorDto>();
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // لا نغير Id
         }
     }
 }
