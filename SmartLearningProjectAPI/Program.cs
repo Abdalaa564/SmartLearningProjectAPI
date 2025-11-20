@@ -1,9 +1,6 @@
 
 
 
-using SmartLearning.Application.Mappings;
-using SmartLearning.Application.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ITIEntity>(options =>
@@ -17,10 +14,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddScoped<IInstructorService, InstructorService>();
-builder.Services.AddAutoMapper(typeof(InstructorProfile));
-
 
 
 
