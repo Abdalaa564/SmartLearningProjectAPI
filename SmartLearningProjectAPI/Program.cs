@@ -1,8 +1,5 @@
 
 
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ITIEntity>(options =>
@@ -17,6 +14,17 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
+
+builder.Services.AddScoped<IInstructorService, InstructorService>();
+builder.Services.AddAutoMapper(typeof(InstructorProfile));
+
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddAutoMapper(typeof(CourseProfile));
+builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddAutoMapper(typeof(UnitProfile));
+
+builder.Services.AddScoped<ILessonService, LessonsService>();
+builder.Services.AddAutoMapper(typeof(LessonsProfile));
 
 
 

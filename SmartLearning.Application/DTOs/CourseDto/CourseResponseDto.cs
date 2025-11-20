@@ -1,13 +1,17 @@
-﻿
-namespace SmartLearning.Application.DTOs
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SmartLearning.Application.DTOs.CourseDto
 {
-    public class CourseResponseDTO
+    public class CourseResponseDto
     {
         public int Crs_Id { get; set; }
         public string Crs_Name { get; set; } = string.Empty;
         public string Crs_Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
-
         public string User_Id { get; set; } = string.Empty;
         public string InstructorName { get; set; } = string.Empty;
     }
