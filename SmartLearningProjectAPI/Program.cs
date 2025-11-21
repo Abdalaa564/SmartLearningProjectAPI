@@ -118,6 +118,20 @@ builder.Services.AddAuthorization(Options =>
 });
 
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -132,7 +146,7 @@ app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 app.UseMiddleware<TransactionMiddleware>();
 app.UseMiddleware<RateLimitingMiddleware>();
 
-app.UseCors();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
