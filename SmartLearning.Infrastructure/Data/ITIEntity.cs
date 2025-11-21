@@ -20,6 +20,7 @@ namespace SmartLearning.Infrastructure.Data
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Questions> Questions { get; set; }
         public DbSet<Choice> Choices { get; set; }
+        public DbSet<Student> Students { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

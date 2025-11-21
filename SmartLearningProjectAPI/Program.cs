@@ -6,7 +6,14 @@ builder.Services.AddDbContext<ITIEntity>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
+    options =>
+    {
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
     .AddEntityFrameworkStores<ITIEntity>()
     .AddDefaultTokenProviders();
 
@@ -17,6 +24,10 @@ builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
 
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddAutoMapper(typeof(InstructorProfile));
+builder.Services.AddAutoMapper(typeof(StudentProfile));
+
+builder.Services.AddScoped<IStudentService, StudentServices>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddAutoMapper(typeof(CourseProfile));
@@ -27,6 +38,12 @@ builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
 
 
+var jwtSettings = builder.Configuration.GetSection("JWT");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
+
+Console.WriteLine($"Secret: {jwtSettings["Secret"]}");
+Console.WriteLine($"Issuer: {jwtSettings["Issuer"]}");
+Console.WriteLine($"Audience: {jwtSettings["Audience"]}");
 
 // [Authoriz] Add JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -41,11 +58,14 @@ builder.Services.AddAuthentication(options =>
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
+        ValidIssuer = jwtSettings["Issuer"],
         ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudiance"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        ValidAudience = jwtSettings["Audience"],
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
     };
 });
 
