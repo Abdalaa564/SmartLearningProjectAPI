@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Core.Model;
-
 namespace SmartLearning.Infrastructure.Data
 {
     public class ITIEntity : IdentityDbContext<ApplicationUser>
@@ -174,7 +172,12 @@ namespace SmartLearning.Infrastructure.Data
                 .HasForeignKey(a => a.User_Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
+            // Student ↔ User (Identity User) (1 → 1)
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
