@@ -1,5 +1,4 @@
 ﻿
-
 namespace SmartLearning.Application.Mappings
 {
     public class StudentProfile : Profile

@@ -29,4 +29,8 @@
     <ProjectReference Include="..\SmartLearning.Core\SmartLearning.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

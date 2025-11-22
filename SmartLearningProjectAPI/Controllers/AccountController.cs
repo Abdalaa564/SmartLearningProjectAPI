@@ -1,8 +1,4 @@
 ﻿
-
-
-using Microsoft.AspNetCore.Identity;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
