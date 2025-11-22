@@ -19,5 +19,9 @@ namespace SmartLearning.Core.Model
         public double? Rating { get; set; }
         public string? YoutubeChannelUrl { get; set; }
 
+
+
+       
+
     }
 }
