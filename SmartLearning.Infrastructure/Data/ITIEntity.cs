@@ -18,18 +18,32 @@ namespace SmartLearning.Infrastructure.Data
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Questions> Questions { get; set; }
         public DbSet<Choice> Choices { get; set; }
+<<<<<<< Updated upstream
+=======
+        public DbSet<Instructor> Instructors { get; set; }
+
         public DbSet<Student> Students { get; set; }
+>>>>>>> Stashed changes
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
+            // Instructor ↔ User (Identity User) (1 → 1)
+            modelBuilder.Entity<Instructor>()
+                 .HasOne(i => i.User)
+                 .WithMany()
+                 .HasForeignKey(i => i.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Course ↔ Instructor (User) (1 → M)
+
+
+            // Instructor ↔ Course (1 → M)
             modelBuilder.Entity<Course>()
-                .HasOne(c => c.User)
-                .WithMany(u => u.Courses)
-                .HasForeignKey(c => c.User_Id)
+                .HasOne(c => c.Instructor)
+                .WithMany(i => i.Courses)
+                .HasForeignKey(c => c.InstructorId)
                 .OnDelete(DeleteBehavior.Restrict);
+
 
             // Course ↔ Unit (1 → M)
             modelBuilder.Entity<Unit>()

@@ -7,8 +7,8 @@ namespace SmartLearning.Application.Mappings
         public CourseProfile()
         {
             CreateMap<Course, CourseResponseDto>()
-                .ForMember(dest => dest.InstructorName,
-                           opt => opt.MapFrom(src => src.User.FullName));
+               .ForMember(dest => dest.InstructorName,
+                          opt => opt.MapFrom(src => src.Instructor.FullName)); 
 
             CreateMap<AddCourseDto, Course>();
             CreateMap<UpdateCourseDto, Course>();

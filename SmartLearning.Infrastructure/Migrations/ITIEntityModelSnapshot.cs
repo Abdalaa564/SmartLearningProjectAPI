@@ -305,6 +305,9 @@ namespace SmartLearning.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Crs_Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Crs_Description")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -315,16 +318,17 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("User_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Crs_Id");
 
-                    b.HasIndex("User_Id");
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("InstructorId");
 
                     b.ToTable("Courses");
                 });
@@ -389,6 +393,48 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.HasIndex("Std_Id");
 
                     b.ToTable("Grades");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Instructor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("JobTitle")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("NumberOfStudents")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("YoutubeChannelUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Instructors");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>
@@ -761,13 +807,17 @@ namespace SmartLearning.Infrastructure.Migrations
 
             modelBuilder.Entity("SmartLearning.Core.Model.Course", b =>
                 {
-                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", null)
                         .WithMany("Courses")
-                        .HasForeignKey("User_Id")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("SmartLearning.Core.Model.Instructor", "Instructor")
+                        .WithMany("Courses")
+                        .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Instructor");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Enrollment", b =>
@@ -814,6 +864,17 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Quiz");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Instructor", b =>
+                {
+                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>
@@ -966,6 +1027,11 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Grades");
 
                     b.Navigation("Units");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Instructor", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>

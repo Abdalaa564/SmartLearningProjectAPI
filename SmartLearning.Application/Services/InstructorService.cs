@@ -1,66 +1,113 @@
+<<<<<<< Updated upstream
+﻿using Microsoft.AspNetCore.Identity;
+=======
 ﻿
+using SmartLearning.Application.DTOs.InstructorDto;
+using SmartLearning.Application.DTOs.Instructors;
+>>>>>>> Stashed changes
+
 namespace SmartLearning.Application.Services
 {
-    public class InstructorService: IInstructorService
+    public class InstructorService : IInstructorService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public InstructorService(UserManager<ApplicationUser> userManager, IMapper mapper, IUnitOfWork unitOfWork)
+        public InstructorService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _userManager = userManager;
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CreateInstructorDto>> GetAllInstructorAsync()
+        // GET ALL
+        public async Task<IEnumerable<InstructorResponseDto>> GetAllAsync()
         {
-            var instructors = await _userManager.GetUsersInRoleAsync("Instructor");
-            return _mapper.Map<IEnumerable<CreateInstructorDto>>(instructors);
+            var repo = _unitOfWork.Repository<Instructor>();
+
+            // Include الـ User عشان لو بتحتاج Email أو بيانات تانية في الـ Response
+            var instructors = await repo.GetAllAsync(i => i.User);
+
+            return _mapper.Map<IEnumerable<InstructorResponseDto>>(instructors);
         }
 
-        public async Task<CreateInstructorDto?> GetByIdAsync(string id)
+        // GET BY ID
+        public async Task<InstructorResponseDto?> GetByIdAsync(int id)
         {
-            var repo = _unitOfWork.Repository<ApplicationUser>();
+            var repo = _unitOfWork.Repository<Instructor>();
 
+<<<<<<< Updated upstream
+            // جلب المستخدم حسب CustomNumberId
             var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
+=======
+            var instructors = await repo.FindAsync(
+                i => i.Id == id,
+                i => i.User
+            );
+>>>>>>> Stashed changes
 
-            if (user == null) return null;
+            var instructor = instructors.FirstOrDefault();
+            if (instructor == null)
+                return null;
 
-            return _mapper.Map<CreateInstructorDto>(user);
+            return _mapper.Map<InstructorResponseDto>(instructor);
         }
-        public async Task<CreateInstructorDto> AddInstructorAsync(CreateInstructorDto dto)
+
+        // CREATE
+        public async Task<InstructorResponseDto> CreateAsync(CreateInstructorDto dto)
         {
-            var instructor = _mapper.Map<ApplicationUser>(dto);
-            await _unitOfWork.Repository<ApplicationUser>().AddAsync(instructor);
+            var repo = _unitOfWork.Repository<Instructor>();
+
+            // Map من DTO لـ Entity
+            var instructor = _mapper.Map<Instructor>(dto);
+
+            await repo.AddAsync(instructor);
             await _unitOfWork.CompleteAsync();
-            return _mapper.Map<CreateInstructorDto>(instructor);
+
+            // نعمل reload للإنستراكتور مع include User (لو محتاج Email في الـ Response)
+            var loaded = (await repo.FindAsync(i => i.Id == instructor.Id, i => i.User))
+                         .FirstOrDefault() ?? instructor;
+
+            return _mapper.Map<InstructorResponseDto>(loaded);
         }
 
-        public async Task<bool> UpdateAsync(string id, UpdateInstructorDto dto)
+        // UPDATE
+        public async Task<bool> UpdateAsync(int id, UpdateInstructorDto dto)
         {
-            var repo = _unitOfWork.Repository<ApplicationUser>();
-            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
+            var repo = _unitOfWork.Repository<Instructor>();
 
-            if (user == null) return false;
+            var instructors = await repo.FindAsync(
+                i => i.Id == id,
+                i => i.User
+            );
 
-            _mapper.Map(dto, user);
+            var instructor = instructors.FirstOrDefault();
+            if (instructor == null)
+                return false;
+
+            // AutoMapper هيحدّث بس الفيلدز اللي مش null (لو مجهّز الـ Profile صح)
+            _mapper.Map(dto, instructor);
+
+            repo.Update(instructor);
             await _unitOfWork.CompleteAsync();
 
             return true;
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        // DELETE
+        public async Task<bool> DeleteAsync(int id)
         {
-            var repo = _unitOfWork.Repository<ApplicationUser>();
+            var repo = _unitOfWork.Repository<Instructor>();
 
-            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
-            if (user == null) return false;
+            var instructors = await repo.FindAsync(i => i.Id == id);
+            var instructor = instructors.FirstOrDefault();
 
-            var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded;
+            if (instructor == null)
+                return false;
+
+            repo.Remove(instructor);
+            await _unitOfWork.CompleteAsync();
+
+            return true;
         }
-
     }
 }

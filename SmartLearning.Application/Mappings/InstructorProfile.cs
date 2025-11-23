@@ -1,20 +1,27 @@
-﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace SmartLearning.Application.Mappings
 {
     public class InstructorProfile : Profile
     {
         public InstructorProfile()
         {
-            // Input DTO → Entity
-            CreateMap<CreateInstructorDto, ApplicationUser>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            // Create → Entity
+            CreateMap<CreateInstructorDto, Instructor>();
 
-            CreateMap<UpdateInstructorDto, ApplicationUser>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.UserName, opt => opt.Ignore());
+            // Update → Entity (partial update)
+            CreateMap<UpdateInstructorDto, Instructor>()
+                .ForAllMembers(opt =>
+                    opt.Condition((src, dest, srcMember) => srcMember != null));
 
-            // Output Entity → DTO
-            CreateMap<ApplicationUser, CreateInstructorDto>();
+            // Entity → Response
+            CreateMap<Instructor, InstructorResponseDto>()
+                .ForMember(dest => dest.Email,
+                           opt => opt.MapFrom(src => src.User.Email));
         }
     }
 }
