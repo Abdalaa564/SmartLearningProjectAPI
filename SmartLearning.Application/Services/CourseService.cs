@@ -1,10 +1,4 @@
 ﻿
-
-
-
-
-using SmartLearning.Application.DTOs.CourseDto;
-
 namespace SmartLearning.Application.Services
 {
     public class CourseService : ICourseService

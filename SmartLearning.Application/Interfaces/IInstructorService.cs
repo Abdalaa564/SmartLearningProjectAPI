@@ -1,9 +1,4 @@
 ﻿
-<<<<<<< Updated upstream
-=======
-using SmartLearning.Application.DTOs.InstructorDto;
-using SmartLearning.Application.DTOs.Instructors;
->>>>>>> Stashed changes
 
 namespace SmartLearning.Application.Interfaces
 {

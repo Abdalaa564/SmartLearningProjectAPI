@@ -1,18 +1,12 @@
-<<<<<<< Updated upstream
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-=======
-﻿
-using SmartLearning.Application.DTOs.InstructorDto;
-using SmartLearning.Application.DTOs.Instructors;
->>>>>>> Stashed changes
 
 namespace SmartLearning.Application.Mappings
 {
-    public class InstructorProfile:Profile
+    public class InstructorProfile : Profile
     {
         public InstructorProfile()
         {
