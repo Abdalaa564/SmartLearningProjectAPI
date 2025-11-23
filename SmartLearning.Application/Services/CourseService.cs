@@ -21,20 +21,24 @@ namespace SmartLearning.Application.Services
         public async Task<IEnumerable<CourseResponseDto>> GetAllCourseAsync()
         {
             var result = await _unitOfWork.Repository<Course>()
-                .GetAllAsync(c => c.User);
+                .GetAllAsync(c => c.Instructor,           
+                              c => c.Instructor.User);     
 
             return _mapper.Map<IEnumerable<CourseResponseDto>>(result);
         }
 
+        // GET BY ID
         public async Task<CourseResponseDto?> GetByIdAsync(int id)
         {
-            var course = await _unitOfWork.Repository<Course>()
-        .FindAsync(c => c.Crs_Id == id, c => c.User);
-
-            var entity = course.FirstOrDefault();
+            var result = await _unitOfWork.Repository<Course>()
+                .FindAsync(c => c.Crs_Id == id,
+                           c => c.Instructor,             
+                           c => c.Instructor.User);      
+            var entity = result.FirstOrDefault();
             return _mapper.Map<CourseResponseDto>(entity);
         }
 
+        // ADD COURSE
         public async Task<bool> AddCourseAsync(AddCourseDto dto)
         {
             var course = _mapper.Map<Course>(dto);
@@ -43,6 +47,7 @@ namespace SmartLearning.Application.Services
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
+        // UPDATE COURSE
         public async Task<bool> UpdateCourseAsync(int id, UpdateCourseDto dto)
         {
             var course = await _unitOfWork.Repository<Course>().GetByIdAsync(id);
@@ -54,6 +59,7 @@ namespace SmartLearning.Application.Services
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
+        // DELETE COURSE
         public async Task<bool> DeleteCourseAsync(int id)
         {
             var course = await _unitOfWork.Repository<Course>().GetByIdAsync(id);
@@ -64,10 +70,3 @@ namespace SmartLearning.Application.Services
         }
     }
 }
-
-
-//.GetAllAsync(q => q
-//    .Include(c => c.User)
-//    .Include(c => c.Units)
-//    .ThenInclude(u => u.Lessons)
-//)
