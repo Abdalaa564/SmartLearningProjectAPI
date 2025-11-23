@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SmartLearning.Application.Mappings
 {
@@ -11,10 +7,10 @@ namespace SmartLearning.Application.Mappings
         public InstructorProfile()
         {
             // Create → Entity
-            CreateMap<CreateInstructorDto, Instructor>();
+            CreateMap<DTOs.CreateInstructorDto, Instructor>();
 
             // Update → Entity (partial update)
-            CreateMap<UpdateInstructorDto, Instructor>()
+            CreateMap<DTOs.UpdateInstructorDto, Instructor>()
                 .ForAllMembers(opt =>
                     opt.Condition((src, dest, srcMember) => srcMember != null));
 

@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace SmartLearning.Application.DTOs
 {
     public class RegisterUserDto
