@@ -28,6 +28,8 @@ builder.Services.AddScoped<IStudentService, StudentServices>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddAutoMapper(typeof(CourseProfile));
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddAutoMapper(typeof(UnitProfile));
