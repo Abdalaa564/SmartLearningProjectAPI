@@ -8,6 +8,7 @@ namespace SmartLearning.Application.Mappings
             CreateMap<CreateLessonDto, Lessons>();
             CreateMap<UpdateLessonDto, Lessons>();
             CreateMap<Lessons, LessonResponseDto>();
+            CreateMap<Lessons, LessonDetailsDto>();
         }
     }
 }

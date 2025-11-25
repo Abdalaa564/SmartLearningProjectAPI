@@ -31,6 +31,12 @@ namespace SmartLearning.Core.Model
         [MaxLength(200)]
         public string? YoutubeChannelUrl { get; set; }
 
+        [MaxLength(300)]
+        public string? PhotoUrl { get; set; }
+
+        [MaxLength(300)]
+        public string? CertificateUrl { get; set; }
+
         public ICollection<Course> Courses { get; set; } = new List<Course>();
 
 

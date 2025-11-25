@@ -24,13 +24,23 @@ namespace SmartLearning.Application.Services
 
         public async Task<UnitResponseDto?> GetUnitByIdAsync(int id)
         {
-            var unit = await _unitOfWork.Repository<Unit>().GetByIdAsync(id);
+            var result = await _unitOfWork.Repository<Unit>().FindAsync(
+        u => u.Unit_Id == id,
+        u => u.Course,
+        u => u.Course.Instructor);
+
+            var unit = result.FirstOrDefault();
             return unit == null ? null : _mapper.Map<UnitResponseDto>(unit);
         }
 
         public async Task<IReadOnlyList<UnitResponseDto>> GetUnitsByCourseIdAsync(int courseId)
         {
-            var units = await _unitOfWork.Repository<Unit>().FindAsync(u => u.Crs_Id == courseId);
+            var units = await _unitOfWork.Repository<Unit>().FindAsync(
+          u => u.Crs_Id == courseId,
+          u => u.Course,
+          u => u.Course.Instructor
+      );
+
             return _mapper.Map<IReadOnlyList<UnitResponseDto>>(units);
         }
 

@@ -1,5 +1,4 @@
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ITIEntity>(options =>
@@ -36,6 +35,8 @@ builder.Services.AddAutoMapper(typeof(UnitProfile));
 
 builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
+builder.Services.AddScoped<IResourceService, ResourceService>();
+builder.Services.AddAutoMapper(typeof(ResourceProfile));
 
 
 var jwtSettings = builder.Configuration.GetSection("JWT");
@@ -140,17 +141,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseStaticFiles();
+
+app.UseCors(MyAllowSpecificOrigins);
+
 
 app.UseMiddleware<LoggingMiddleware>();
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 app.UseMiddleware<TransactionMiddleware>();
 app.UseMiddleware<RateLimitingMiddleware>();
 
-app.UseCors(MyAllowSpecificOrigins);
+//app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

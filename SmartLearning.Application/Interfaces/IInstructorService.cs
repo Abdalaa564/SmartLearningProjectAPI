@@ -1,5 +1,8 @@
 ﻿
 
+using SmartLearning.Application.DTOs.InstructorDto;
+using SmartLearning.Application.DTOs.Instructors;
+
 namespace SmartLearning.Application.Interfaces
 {
     public interface IInstructorService

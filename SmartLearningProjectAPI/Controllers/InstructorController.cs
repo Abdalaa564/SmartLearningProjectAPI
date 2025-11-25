@@ -1,11 +1,8 @@
-<<<<<<< Updated upstream
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-=======
+
 ﻿
 using SmartLearning.Application.DTOs.InstructorDto;
 using SmartLearning.Application.DTOs.Instructors;
->>>>>>> Stashed changes
+
 
 namespace SmartLearningProjectAPI.Controllers
 {

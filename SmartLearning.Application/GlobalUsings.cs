@@ -16,6 +16,8 @@ global using SmartLearning.Application.DTOs;
 global using SmartLearning.Application.DTOs.CourseDto;
 global using SmartLearning.Application.DTOs.UnitDto;
 global using SmartLearning.Application.DTOs.LessonDto;
+global using Microsoft.AspNetCore.Http;
+
 
 
 

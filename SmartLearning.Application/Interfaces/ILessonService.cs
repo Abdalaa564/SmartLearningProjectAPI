@@ -8,5 +8,6 @@ namespace SmartLearning.Application.Interfaces
         Task<IReadOnlyList<LessonResponseDto>> GetLessonsByUnitIdAsync(int unitId);
         Task UpdateLessonAsync(int id, UpdateLessonDto dto);
         Task DeleteLessonAsync(int id);
+        Task<LessonDetailsDto?> GetLessonWithResourcesByIdAsync(int id);
     }
 }
