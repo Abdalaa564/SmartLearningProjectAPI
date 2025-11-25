@@ -454,6 +454,36 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.ToTable("Lessons");
                 });
 
+            modelBuilder.Entity("SmartLearning.Core.Model.Meeting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("JoinLink")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("StartsAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("Meetings");
+                });
+
             modelBuilder.Entity("SmartLearning.Core.Model.Questions", b =>
                 {
                     b.Property<int>("Question_Id")
@@ -879,6 +909,17 @@ namespace SmartLearning.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Meeting", b =>
+                {
+                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Questions", b =>

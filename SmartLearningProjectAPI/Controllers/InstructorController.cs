@@ -1,9 +1,4 @@
 
-﻿
-using SmartLearning.Application.DTOs.InstructorDto;
-using SmartLearning.Application.DTOs.Instructors;
-
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -38,7 +33,7 @@ namespace SmartLearningProjectAPI.Controllers
 
         // POST: api/Instructor
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateInstructorDto dto)
+        public async Task<IActionResult> Create([FromBody] SmartLearning.Application.DTOs.CreateInstructorDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -51,7 +46,7 @@ namespace SmartLearningProjectAPI.Controllers
 
         // PUT: api/Instructor/5
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateInstructorDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] SmartLearning.Application.DTOs.UpdateInstructorDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

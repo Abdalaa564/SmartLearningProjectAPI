@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-﻿
-using SmartLearning.Application.DTOs.InstructorDto;
-using SmartLearning.Application.DTOs.Instructors;
+﻿using SmartLearning.Application.DTOs.Instructors;
+>>>>>>> Stashed changes
 
 namespace SmartLearning.Application.Services
 {
@@ -31,14 +28,14 @@ namespace SmartLearning.Application.Services
         // GET BY ID
         public async Task<InstructorResponseDto?> GetByIdAsync(int id)
         {
-            var repo = _unitOfWork.Repository<Instructor>();
-
-
+            // جلب المستخدم حسب CustomNumberId
+            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
+            var user = (await repo.FindAsync(u => u.Id==id)).FirstOrDefault();
+=======
             var instructors = await repo.FindAsync(
                 i => i.Id == id,
-                i => i.User
             );
-
+>>>>>>> Stashed changes
 
             var instructor = instructors.FirstOrDefault();
             if (instructor == null)
@@ -46,9 +43,9 @@ namespace SmartLearning.Application.Services
 
             return _mapper.Map<InstructorResponseDto>(instructor);
         }
-
+        public async Task<InstructorResponseDto> CreateAsync(DTOs.CreateInstructorDto dto)
         // CREATE
-        public async Task<InstructorResponseDto> CreateAsync(CreateInstructorDto dto)
+        public async Task<InstructorResponseDto> CreateAsync(DTOs.CreateInstructorDto dto)
         {
             var repo = _unitOfWork.Repository<Instructor>();
 
@@ -64,9 +61,9 @@ namespace SmartLearning.Application.Services
 
             return _mapper.Map<InstructorResponseDto>(loaded);
         }
-
+        public async Task<bool> UpdateAsync(int id, DTOs.UpdateInstructorDto dto)
         // UPDATE
-        public async Task<bool> UpdateAsync(int id, UpdateInstructorDto dto)
+        public async Task<bool> UpdateAsync(int id, DTOs.UpdateInstructorDto dto)
         {
             var repo = _unitOfWork.Repository<Instructor>();
 
@@ -88,7 +85,6 @@ namespace SmartLearning.Application.Services
             return true;
         }
 
-        // DELETE
         public async Task<bool> DeleteAsync(int id)
         {
             var repo = _unitOfWork.Repository<Instructor>();

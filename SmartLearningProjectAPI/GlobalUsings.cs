@@ -46,3 +46,7 @@ global using SmartLearning.Infrastructure.ExternalServices;
 global using Microsoft.AspNetCore.WebUtilities;
 global using SmartLearning.Application.DTOs.Resource;
 global using Microsoft.Extensions.FileProviders;
+global using SmartLearning.Infrastructure.ExternalServices;
+global using SmartLearning.Application.DTOs.InstructorDto;
+global using SmartLearning.Application.DTOs.Instructors;
+global using SmartLearning.Application.Interfaces.ExternalInterfaces;

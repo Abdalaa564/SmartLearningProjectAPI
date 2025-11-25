@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
+
 namespace SmartLearning.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
@@ -71,3 +73,33 @@ namespace SmartLearning.Infrastructure.Repositories
         }
     }
 }
+
+
+// اضافه بعد المراجعه مع الشباب 
+
+//public async Task<T?> GetSingleAsync(
+//    Expression<Func<T, bool>> predicate,
+//    params Expression<Func<T, object>>[] includes)
+//{
+//    IQueryable<T> query = _dbSet.AsNoTracking().Where(predicate);
+
+//    if (includes != null)
+//    {
+//        foreach (var include in includes)
+//            query = query.Include(include);
+//    }
+
+//    return await query.FirstOrDefaultAsync();
+//}
+
+//public async Task<T?> GetSingleAsync(
+//    Expression<Func<T, bool>> predicate,
+//    Func<IQueryable<T>, IQueryable<T>>? includeFunc = null)
+//{
+//    IQueryable<T> query = _dbSet.AsNoTracking().Where(predicate);
+
+//    if (includeFunc != null)
+//        query = includeFunc(query);
+
+//    return await query.FirstOrDefaultAsync();
+//}

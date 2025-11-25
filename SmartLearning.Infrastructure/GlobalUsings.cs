@@ -12,8 +12,8 @@ global using System.Net.Http.Json;
 global using System.Collections;
 
 
-global using SmartLearning.Application.GenericInterfaces;
 global using SmartLearning.Infrastructure.Data;
-global using SmartLearning.Application.Interfaces;
+global using SmartLearning.Application.Interfaces.ExternalInterfaces;
+global using SmartLearning.Application.GenericInterfaces;
 global using SmartLearning.Application.DTOs.ChatGPT;
 global using SmartLearning.Core.Model;

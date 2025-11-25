@@ -1,6 +1,4 @@
 
-using SmartLearning.Application.DTOs.InstructorDto;
-using SmartLearning.Application.DTOs.Instructors;
 
 namespace SmartLearning.Application.Mappings
 {
@@ -8,9 +6,11 @@ namespace SmartLearning.Application.Mappings
     {
         public InstructorProfile()
         {
-            CreateMap<CreateInstructorDto, Instructor>();
+            // Create ? Entity
+            CreateMap<DTOs.CreateInstructorDto, Instructor>();
 
-            CreateMap<UpdateInstructorDto, Instructor>()
+            // Update ? Entity (partial update)
+            CreateMap<DTOs.UpdateInstructorDto, Instructor>()
                 .ForAllMembers(opt =>
                     opt.Condition((src, dest, srcMember) => srcMember != null));
 
