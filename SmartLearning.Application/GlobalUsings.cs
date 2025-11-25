@@ -17,7 +17,7 @@ global using SmartLearning.Application.DTOs.CourseDto;
 global using SmartLearning.Application.DTOs.UnitDto;
 global using SmartLearning.Application.DTOs.LessonDto;
 global using SmartLearning.Application.DTOs.Instructors;
-
+global using SmartLearning.Application.DTOs.MeetingDto;
 global using SmartLearning.Application.DTOs.InstructorDto;
 global using SmartLearning.Application.DTOs.Instructors;
 

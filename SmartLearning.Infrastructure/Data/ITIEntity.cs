@@ -19,8 +19,8 @@ namespace SmartLearning.Infrastructure.Data
         public DbSet<Questions> Questions { get; set; }
         public DbSet<Choice> Choices { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
-
         public DbSet<Student> Students { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -180,6 +180,13 @@ namespace SmartLearning.Infrastructure.Data
                 .HasOne(s => s.User)
                 .WithMany()
                 .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Meeting ↔ User (Identity User) (M → 1)
+            modelBuilder.Entity<Meeting>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.CreatedBy)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

@@ -1,4 +1,6 @@
 ﻿
+using SmartLearning.Application.Interfaces.ExternalInterfaces;
+
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]

@@ -1,7 +1,4 @@
 ﻿
-
-
-
 namespace SmartLearning.Infrastructure.ExternalServices
 {
     public class ChatGPTService : IChatGPTService

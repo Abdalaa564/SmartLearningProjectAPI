@@ -45,3 +45,4 @@ global using SmartLearning.Infrastructure.Repositories;
 global using SmartLearning.Infrastructure.ExternalServices;
 global using SmartLearning.Application.DTOs.InstructorDto;
 global using SmartLearning.Application.DTOs.Instructors;
+global using SmartLearning.Application.Interfaces.ExternalInterfaces;
