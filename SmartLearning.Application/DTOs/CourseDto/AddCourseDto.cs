@@ -14,6 +14,8 @@ namespace SmartLearning.Application.DTOs.CourseDto
         public decimal Price { get; set; }
 
         [Required]
-        public string User_Id { get; set; }
+        public int InstructorId { get; set; }
+
+        public string? ImageUrl { get; set; }
     }
 }

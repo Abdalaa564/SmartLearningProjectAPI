@@ -21,10 +21,48 @@ namespace SmartLearningProjectAPI.Controllers
             => Ok(await _courseService.GetByIdAsync(id));
 
         [HttpPost]
-        public async Task<IActionResult> Create(AddCourseDto dto)
-            => await _courseService.AddCourseAsync(dto)
-                ? Ok("Created Successfully")
-                : BadRequest("Failed");
+        [Consumes("multipart/form-data")] 
+        public async Task<IActionResult> Create([FromForm] AddCourseRequest request)
+        {
+            string? finalImageUrl = null;
+
+            if (request.ImageFile is not null && request.ImageFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "courses");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(request.ImageFile.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.ImageFile.CopyToAsync(stream);
+                }
+
+                finalImageUrl = $"/images/courses/{fileName}";
+            }
+            else if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
+                finalImageUrl = request.ImageUrl;
+            }
+
+            var dto = new AddCourseDto
+            {
+                Crs_Name = request.Crs_Name,
+                Crs_Description = request.Crs_Description,
+                Price = request.Price,
+                InstructorId = request.InstructorId,
+                ImageUrl = finalImageUrl
+            };
+
+            var isCreated = await _courseService.AddCourseAsync(dto);
+
+            if (!isCreated)
+                return BadRequest("Failed");
+
+            return Ok("Created Successfully");
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateCourseDto dto)

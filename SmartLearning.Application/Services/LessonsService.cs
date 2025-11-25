@@ -1,4 +1,6 @@
 ﻿
+using SmartLearning.Application.DTOs.Resource;
+
 namespace SmartLearning.Application.Services
 {
     public class LessonsService : ILessonService
@@ -53,6 +55,19 @@ namespace SmartLearning.Application.Services
                 _unitOfWork.Repository<Lessons>().Remove(lesson);
                 await _unitOfWork.CompleteAsync();
             }
+        }
+        public async Task<LessonDetailsDto?> GetLessonWithResourcesByIdAsync(int id)
+        {
+            var lesson = await _unitOfWork.Repository<Lessons>().GetByIdAsync(id);
+            if (lesson == null) return null;
+
+            var resources = await _unitOfWork.Repository<Resource>()
+                                              .FindAsync(r => r.Lesson_Id == id);
+
+            var dto = _mapper.Map<LessonDetailsDto>(lesson);
+            dto.Resources = _mapper.Map<List<ResourceResponseDto>>(resources);
+
+            return dto;
         }
     }
 }

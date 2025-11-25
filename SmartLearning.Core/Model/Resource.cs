@@ -20,6 +20,8 @@ namespace SmartLearning.Core.Model
 
         [MaxLength(50)]
         public string Resource_Type { get; set; } = string.Empty;
+        [MaxLength(500)]
+        public string? ThumbnailUrl { get; set; }
 
         public Lessons Lesson { get; set; } = null!;
     }

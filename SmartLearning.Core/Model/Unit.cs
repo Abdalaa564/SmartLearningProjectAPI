@@ -14,6 +14,8 @@
         [MaxLength(500)]
         public string Unit_Description { get; set; } = string.Empty;
         public int OrderIndex { get; set; }
+        [MaxLength(300)]
+        public string? ImageUrl { get; set; }
 
         //(M → 1)
         public Course Course { get; set; } = null!;

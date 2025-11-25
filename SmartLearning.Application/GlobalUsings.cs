@@ -20,5 +20,8 @@ global using SmartLearning.Application.DTOs.Instructors;
 global using SmartLearning.Application.DTOs.MeetingDto;
 global using SmartLearning.Application.DTOs.InstructorDto;
 global using SmartLearning.Application.DTOs.Instructors;
+global using Microsoft.AspNetCore.Http;
+
+
 
 

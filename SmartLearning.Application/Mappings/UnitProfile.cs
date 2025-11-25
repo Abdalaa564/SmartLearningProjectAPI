@@ -7,7 +7,15 @@ namespace SmartLearning.Application.Mappings
         {
             CreateMap<CreateUnitDto, Unit>();
             CreateMap<UpdateUnitDto, Unit>();
-            CreateMap<Unit, UnitResponseDto>();
+
+            CreateMap<Unit, UnitResponseDto>()
+                .ForMember(dest => dest.InstructorName,
+                    opt => opt.MapFrom(src =>
+                        src.Course != null &&
+                        src.Course.Instructor != null
+                            ? src.Course.Instructor.FullName
+                            : string.Empty
+                    ));
         }
     }
 }

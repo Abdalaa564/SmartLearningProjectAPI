@@ -17,5 +17,11 @@
 
         [MaxLength(200)]
         public string? YoutubeChannelUrl { get; set; }
+
+        [MaxLength(300)]
+        public string? PhotoUrl { get; set; }
+
+        [MaxLength(300)]
+        public string? CertificateUrl { get; set; }
     }
 }

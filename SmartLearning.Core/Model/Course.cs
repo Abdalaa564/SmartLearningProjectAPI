@@ -14,6 +14,8 @@ namespace SmartLearning.Core.Model
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
+        [MaxLength(300)]
+        public string? ImageUrl { get; set; }
 
         [Required]
         public int InstructorId { get; set; }   // FK → Instructor
