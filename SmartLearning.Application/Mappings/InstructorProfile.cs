@@ -1,20 +1,23 @@
-﻿
+
+
 namespace SmartLearning.Application.Mappings
 {
     public class InstructorProfile : Profile
     {
         public InstructorProfile()
         {
-            // Input DTO → Entity
-            CreateMap<CreateInstructorDto, ApplicationUser>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            // Create → Entity
+            CreateMap<DTOs.CreateInstructorDto, Instructor>();
 
-            CreateMap<UpdateInstructorDto, ApplicationUser>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.UserName, opt => opt.Ignore());
+            // Update → Entity (partial update)
+            CreateMap<DTOs.UpdateInstructorDto, Instructor>()
+                .ForAllMembers(opt =>
+                    opt.Condition((src, dest, srcMember) => srcMember != null));
 
-            // Output Entity → DTO
-            CreateMap<ApplicationUser, CreateInstructorDto>();
+            // Entity → Response
+            CreateMap<Instructor, InstructorResponseDto>()
+                .ForMember(dest => dest.Email,
+                           opt => opt.MapFrom(src => src.User.Email));
         }
     }
 }

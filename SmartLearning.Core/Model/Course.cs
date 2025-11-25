@@ -16,9 +16,9 @@ namespace SmartLearning.Core.Model
         public decimal Price { get; set; }
 
         [Required]
-        public string User_Id { get; set; } = string.Empty; // Foreign Key  Course  Instructor
+        public int InstructorId { get; set; }   // FK → Instructor
 
-        public ApplicationUser User { get; set; } = null!; // Course  Instructor (1 → 1)
+        public Instructor Instructor { get; set; } = null!; // Course → Instructor (M→1)
 
         //(M → 1)
         public ICollection<Unit> Units { get; set; } = new List<Unit>();

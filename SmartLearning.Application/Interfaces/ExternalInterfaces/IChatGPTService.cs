@@ -1,5 +1,4 @@
-﻿
-namespace SmartLearning.Application.Interfaces
+﻿namespace SmartLearning.Application.Interfaces.ExternalInterfaces
 {
     public interface IChatGPTService
     {

@@ -1,5 +1,4 @@
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ITIEntity>(options =>
@@ -20,7 +19,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
 
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddAutoMapper(typeof(InstructorProfile));
@@ -39,6 +37,15 @@ builder.Services.AddAutoMapper(typeof(UnitProfile));
 builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
 
+//---- External Services
+builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
+
+builder.Services.AddScoped<IMeetingService, MeetingService>();
+builder.Services.AddAutoMapper(typeof(MeetingProfile));
+
+builder.Services.AddScoped<IStreamTokenService, StreamTokenService>();
+
+//---- End External Services
 
 var jwtSettings = builder.Configuration.GetSection("JWT");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
@@ -127,9 +134,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:4200", "http://localhost:11796")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
