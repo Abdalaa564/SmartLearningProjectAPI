@@ -7,10 +7,10 @@ namespace SmartLearning.Application.Mappings
         public InstructorProfile()
         {
             // Create ? Entity
-            CreateMap<DTOs.CreateInstructorDto, Instructor>();
+            CreateMap<CreateInstructorDto, Instructor>();
 
             // Update ? Entity (partial update)
-            CreateMap<DTOs.UpdateInstructorDto, Instructor>()
+            CreateMap<UpdateInstructorDto, Instructor>()
                 .ForAllMembers(opt =>
                     opt.Condition((src, dest, srcMember) => srcMember != null));
 
