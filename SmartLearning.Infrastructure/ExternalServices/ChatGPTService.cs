@@ -12,7 +12,8 @@ namespace SmartLearning.Infrastructure.ExternalServices
             _config = config;
         }
 
-        public async Task<string> AskChatGPTAsync(string prompt)
+        //public async Task<string> AskChatGPTAsync(string prompt)
+        public async Task<string> AskChatGPTAsync(List<ChatGPTMessage> messages)
         {
             var apiKey = _config["OpenAI:ApiKey"];
 
@@ -22,10 +23,11 @@ namespace SmartLearning.Infrastructure.ExternalServices
             var request = new
             {
                 model = "gpt-4o-mini",
-                messages = new[]
-                {
-                    new { role = "user", content = prompt }
-                }
+                messages = messages
+                //messages = new[]
+                //{
+                //    new { role = "user", content = prompt }
+                //}
             };
 
             var response = await _httpClient.PostAsJsonAsync(

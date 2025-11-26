@@ -10,15 +10,11 @@ namespace SmartLearning.Infrastructure.ExternalServices
     {
         private readonly string _apiKey;
         private readonly string _apiSecret;
-        private readonly StreamChatClient _client;
 
         public StreamTokenService(IConfiguration config)
         {
-            _client = new StreamChatClient(
-                config["Stream:ApiKey"],
-                config["Stream:ApiSecret"]
-            );
-
+            _apiKey = config["Stream:ApiKey"]!; 
+            _apiSecret = config["Stream:ApiSecret"]!;
         }
 
         public string CreateUserToken(string userId, string callType, string callId)

@@ -1,5 +1,5 @@
 ﻿
-using SmartLearning.Application.Interfaces.ExternalInterfaces;
+using SmartLearning.Application.DTOs.ChatGPT;
 
 namespace SmartLearningProjectAPI.Controllers
 {
@@ -14,10 +14,17 @@ namespace SmartLearningProjectAPI.Controllers
             _chatService = chatService;
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> Ask([FromBody] string prompt)
+        //{
+        //    var response = await _chatService.AskChatGPTAsync(prompt);
+        //    return Ok(response);
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> Ask([FromBody] string prompt)
+        public async Task<IActionResult> Ask([FromBody] ChatRequest request)
         {
-            var response = await _chatService.AskChatGPTAsync(prompt);
+            var response = await _chatService.AskChatGPTAsync(request.Messages);
             return Ok(response);
         }
     }
