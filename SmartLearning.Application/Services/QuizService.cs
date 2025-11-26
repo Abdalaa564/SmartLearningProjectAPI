@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartLearning.Application.DTOs.QuizDto;
+using SmartLearning.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,47 +144,58 @@ namespace SmartLearning.Application.Services
 
 		public async Task<bool> SubmitAnswerAsync(string userId, SubmitAnswerDto answerDto)
 		{
-			// التحقق من وجود السؤال
+			// IDs لازم تكون أرقام منطقية
+			if (answerDto.Quiz_Id <= 0 || answerDto.Question_Id <= 0 || answerDto.Choice_Id <= 0)
+				return false;
+
+			// تأكد إن الكويز موجود
+			var quiz = await _unitOfWork.Repository<Quiz>()
+				.GetByIdAsync(answerDto.Quiz_Id);
+
+			if (quiz == null)
+				return false;
+
+			// تأكد إن السؤال موجود ويتبع نفس الكويز
 			var question = await _unitOfWork.Repository<Questions>()
 				.GetByIdAsync(answerDto.Question_Id);
 
-			if (question == null)
+			if (question == null || question.Quiz_Id != quiz.Quiz_Id)
 				return false;
 
-			// التحقق من وجود الاختيار
+			// تأكد إن الاختيار موجود ويتبع نفس السؤال (لو عندك QuestionId في Choice)
 			var choice = await _unitOfWork.Repository<Choice>()
 				.GetByIdAsync(answerDto.Choice_Id);
 
-			if (choice == null)
+			if (choice == null /* || choice.QuestionId != question.Question_Id */)
 				return false;
 
-			// التحقق من عدم وجود إجابة سابقة لنفس السؤال
 			var existingAnswers = await _unitOfWork.Repository<StudentAnswer>()
-				.FindAsync(predicate: sa =>
+				.FindAsync(sa =>
 					sa.User_Id == userId &&
 					sa.Quiz_Id == answerDto.Quiz_Id &&
 					sa.Question_Id == answerDto.Question_Id
+
 				);
 
 			var existingAnswer = existingAnswers.FirstOrDefault();
 
 			if (existingAnswer != null)
 			{
-				// تحديث الإجابة
 				existingAnswer.Choice_Id = answerDto.Choice_Id;
 				existingAnswer.Is_Correct = choice.IsCorrect;
+				existingAnswer.Questions = question;
 				_unitOfWork.Repository<StudentAnswer>().Update(existingAnswer);
 			}
 			else
 			{
-				// إضافة إجابة جديدة
 				var studentAnswer = new StudentAnswer
 				{
 					User_Id = userId,
 					Quiz_Id = answerDto.Quiz_Id,
 					Question_Id = answerDto.Question_Id,
 					Choice_Id = answerDto.Choice_Id,
-					Is_Correct = choice.IsCorrect
+					Is_Correct = choice.IsCorrect,
+					Questions = question	
 				};
 
 				await _unitOfWork.Repository<StudentAnswer>().AddAsync(studentAnswer);
