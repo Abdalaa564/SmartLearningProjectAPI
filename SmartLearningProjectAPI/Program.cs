@@ -53,8 +53,8 @@ var jwtSettings = builder.Configuration.GetSection("JWT");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
 
 Console.WriteLine($"Secret: {jwtSettings["Secret"]}");
-Console.WriteLine($"Issuer: {jwtSettings["ValidIssuer"]}");
-Console.WriteLine($"Audience: {jwtSettings["ValidAudiance"]}");
+Console.WriteLine($"Issuer: {jwtSettings["Issuer"]}");
+Console.WriteLine($"Audience: {jwtSettings["Audiance"]}");
 
 // [Authoriz] Add JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -72,9 +72,9 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
-        ValidIssuer = jwtSettings["ValidIssuer"],
+        ValidIssuer = jwtSettings["Issuer"],
         ValidateAudience = true,
-        ValidAudience = jwtSettings["ValidAudiance"],
+        ValidAudience = jwtSettings["Audiance"],
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
