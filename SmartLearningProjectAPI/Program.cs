@@ -33,7 +33,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddAutoMapper(typeof(CourseProfile));
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddAutoMapper(typeof(UnitProfile));
-
+builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
 builder.Services.AddScoped<IResourceService, ResourceService>();
@@ -53,8 +53,8 @@ var jwtSettings = builder.Configuration.GetSection("JWT");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
 
 Console.WriteLine($"Secret: {jwtSettings["Secret"]}");
-Console.WriteLine($"Issuer: {jwtSettings["Issuer"]}");
-Console.WriteLine($"Audience: {jwtSettings["Audience"]}");
+Console.WriteLine($"Issuer: {jwtSettings["ValidIssuer"]}");
+Console.WriteLine($"Audience: {jwtSettings["ValidAudiance"]}");
 
 // [Authoriz] Add JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -72,9 +72,9 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
+        ValidIssuer = jwtSettings["ValidIssuer"],
         ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
+        ValidAudience = jwtSettings["ValidAudiance"],
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
