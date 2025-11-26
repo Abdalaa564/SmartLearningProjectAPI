@@ -1,5 +1,4 @@
 ﻿using SmartLearning.Application.DTOs.QuizDto;
-using SmartLearning.Application.DTOs.RatingDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,12 +50,6 @@ namespace SmartLearning.Application.Mappings
 					opt => opt.MapFrom(src => src.Questions.Grade_Point))
 				.ForMember(dest => dest.CorrectAnswer,
 					opt => opt.MapFrom(src => src.Questions.CorrectAnswer));
-
-			CreateMap<Rating, RatingDto>().ReverseMap();
-
-		
-			CreateMap<CreateOrUpdateRatingDto, Rating>()
-				.ForMember(dest => dest.User_Id, opt => opt.Ignore());
 		}
 	}
 }
