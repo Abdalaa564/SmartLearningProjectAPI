@@ -24,8 +24,8 @@ namespace SmartLearning.Infrastructure.ExternalServices
                 model = "gpt-4o-mini",
                 messages = new[]
                 {
-                new { role = "user", content = prompt }
-            }
+                    new { role = "user", content = prompt }
+                }
             };
 
             var response = await _httpClient.PostAsJsonAsync(

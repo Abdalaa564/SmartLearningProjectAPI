@@ -10,11 +10,14 @@ namespace SmartLearning.Infrastructure.ExternalServices
     {
         private readonly string _apiKey;
         private readonly string _apiSecret;
+        private readonly StreamChatClient _client;
 
         public StreamTokenService(IConfiguration config)
         {
-            _apiKey = config["Stream:ApiKey"]!;
-            _apiSecret = config["Stream:ApiSecret"]!;
+            _client = new StreamChatClient(
+                config["Stream:ApiKey"],
+                config["Stream:ApiSecret"]
+            );
 
         }
 
