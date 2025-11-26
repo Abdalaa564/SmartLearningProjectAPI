@@ -41,6 +41,7 @@ builder.Services.AddAutoMapper(typeof(ResourceProfile));
 
 //---- External Services
 builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
+builder.Services.AddScoped<IPdfChatService, PdfChatService>();
 
 builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddAutoMapper(typeof(MeetingProfile));

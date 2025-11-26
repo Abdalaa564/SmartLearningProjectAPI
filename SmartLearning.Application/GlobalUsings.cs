@@ -7,6 +7,7 @@ global using System.Text;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.IdentityModel.Tokens;
+global using Microsoft.EntityFrameworkCore;
 global using AutoMapper;
 
 global using SmartLearning.Core.Model;
@@ -20,7 +21,9 @@ global using SmartLearning.Application.DTOs.Instructors;
 global using SmartLearning.Application.DTOs.MeetingDto;
 global using SmartLearning.Application.DTOs.InstructorDto;
 global using SmartLearning.Application.DTOs.Instructors;
+global using SmartLearning.Application.DTOs.Resource;
 global using Microsoft.AspNetCore.Http;
+global using SmartLearning.Core.Enums;
 
 
 

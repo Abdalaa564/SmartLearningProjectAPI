@@ -1,5 +1,4 @@
 ﻿
-
 namespace SmartLearning.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork

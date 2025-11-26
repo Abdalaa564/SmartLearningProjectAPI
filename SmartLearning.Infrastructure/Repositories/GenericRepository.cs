@@ -1,6 +1,4 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
-
 namespace SmartLearning.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class

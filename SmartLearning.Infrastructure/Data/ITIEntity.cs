@@ -32,8 +32,6 @@ namespace SmartLearning.Infrastructure.Data
                  .HasForeignKey(i => i.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
 
-
-
             // Instructor ↔ Course (1 → M)
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.Instructor)
