@@ -6,17 +6,22 @@ namespace SmartLearning.Core.Model
         [Key]
         public int Enroll_Id { get; set; }
 
+        // FK → Student
         [Required]
-        public string User_Id { get; set; } = string.Empty;
+        [ForeignKey(nameof(Student))]
+        public int StudentId { get; set; }
+        public Student Student { get; set; } = null!;
 
+        // FK → Course
         [Required]
+        [ForeignKey(nameof(Course))]
         public int Crs_Id { get; set; }
+        public Course Course { get; set; } = null!;   
+
         public DateTime Enroll_Date { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Paid_Amount { get; set; }
-
-        public ApplicationUser User { get; set; } = null!;
-        public Course Course { get; set; } = new Course();
     }
 }
+    

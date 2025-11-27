@@ -19,8 +19,11 @@ namespace SmartLearning.Application.Services
         {
             var repo = _unitOfWork.Repository<Instructor>();
 
-            // Include الـ User عشان لو بتحتاج Email أو بيانات تانية في الـ Response
-            var instructors = await repo.GetAllAsync(i => i.User);
+            var instructors = await repo.GetAllAsync(query =>
+                query
+                    .Include(i => i.Courses)
+                        .ThenInclude(c => c.Enrollments)
+            );
 
             return _mapper.Map<IEnumerable<InstructorResponseDto>>(instructors);
         }
@@ -30,36 +33,43 @@ namespace SmartLearning.Application.Services
         {
             var repo = _unitOfWork.Repository<Instructor>();
 
-            var user = (await  repo.FindAsync(u => u.Id == id)).FirstOrDefault();
+            var instructors = await repo.FindAsync(
+                i => i.Id == id,
+                q => q
+                    .Include(i => i.Courses)
+                        .ThenInclude(c => c.Enrollments)
+            );
 
-            var instructors = (await repo.FindAsync(u => u.Id == id)).FirstOrDefault();
-
-
-           // var instructor = instructors.FirstOrDefault();
-            if (instructors == null)
+            var instructor = instructors.FirstOrDefault();
+            if (instructor == null)
                 return null;
 
-            return _mapper.Map<InstructorResponseDto>(instructors);
+            return _mapper.Map<InstructorResponseDto>(instructor);
         }
-      
+
         // CREATE
         public async Task<InstructorResponseDto> CreateAsync(CreateInstructorDto dto)
         {
             var repo = _unitOfWork.Repository<Instructor>();
 
-            // Map من DTO لـ Entity
             var instructor = _mapper.Map<Instructor>(dto);
 
             await repo.AddAsync(instructor);
             await _unitOfWork.CompleteAsync();
 
-            // نعمل reload للإنستراكتور مع include User (لو محتاج Email في الـ Response)
-            var loaded = (await repo.FindAsync(i => i.Id == instructor.Id, i => i.User))
-                         .FirstOrDefault() ?? instructor;
+            // نرجّع المدرّس مع الـ User + Courses + Enrollments
+            var loadedList = await repo.FindAsync(
+                i => i.Id == instructor.Id,
+                q => q.Include(i => i.User)
+                      .Include(i => i.Courses)
+                          .ThenInclude(c => c.Enrollments)
+            );
+
+            var loaded = loadedList.FirstOrDefault() ?? instructor;
 
             return _mapper.Map<InstructorResponseDto>(loaded);
         }
-       
+
         // UPDATE
         public async Task<bool> UpdateAsync(int id, UpdateInstructorDto dto)
         {
@@ -67,14 +77,13 @@ namespace SmartLearning.Application.Services
 
             var instructors = await repo.FindAsync(
                 i => i.Id == id,
-                i => i.User
+                q => q.Include(i => i.User)
             );
 
             var instructor = instructors.FirstOrDefault();
             if (instructor == null)
                 return false;
 
-            // AutoMapper هيحدّث بس الفيلدز اللي مش null (لو مجهّز الـ Profile صح)
             _mapper.Map(dto, instructor);
 
             repo.Update(instructor);

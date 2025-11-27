@@ -45,3 +45,4 @@ global using SmartLearning.Application.DTOs.InstructorDto;
 global using SmartLearning.Application.DTOs.Instructors;
 global using SmartLearning.Application.DTOs.ChatGPT;
 global using SmartLearning.Application.Interfaces.ExternalInterfaces;
+global using SmartLearning.Application.DTOs.EnrollDto;

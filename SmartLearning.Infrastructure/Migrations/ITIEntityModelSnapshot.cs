@@ -331,15 +331,14 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Property<decimal>("Paid_Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("User_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
                     b.HasKey("Enroll_Id");
 
                     b.HasIndex("Crs_Id");
 
-                    b.HasIndex("User_Id");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Enrollments");
                 });
@@ -851,15 +850,15 @@ namespace SmartLearning.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                    b.HasOne("SmartLearning.Core.Model.Student", "Student")
                         .WithMany("Enrollments")
-                        .HasForeignKey("User_Id")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
 
-                    b.Navigation("User");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Grades", b =>
@@ -1043,8 +1042,6 @@ namespace SmartLearning.Infrastructure.Migrations
                 {
                     b.Navigation("Attendances");
 
-                    b.Navigation("Enrollments");
-
                     b.Navigation("Grades");
 
                     b.Navigation("Ratings");
@@ -1091,6 +1088,11 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("StudentAnswers");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Student", b =>
+                {
+                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Unit", b =>

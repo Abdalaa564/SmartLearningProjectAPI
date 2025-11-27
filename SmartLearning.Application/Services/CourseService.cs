@@ -5,29 +5,31 @@ namespace SmartLearning.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+       
 
         public CourseService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+           
         }
 
         public async Task<IEnumerable<CourseResponseDto>> GetAllCourseAsync()
         {
             var result = await _unitOfWork.Repository<Course>()
-                .GetAllAsync(c => c.Instructor,           
-                              c => c.Instructor.User);     
+                .GetAllAsync(c => c.Instructor,
+                             c => c.Instructor.User);
 
             return _mapper.Map<IEnumerable<CourseResponseDto>>(result);
         }
 
-        // GET BY ID
         public async Task<CourseResponseDto?> GetByIdAsync(int id)
         {
             var result = await _unitOfWork.Repository<Course>()
                 .FindAsync(c => c.Crs_Id == id,
-                           c => c.Instructor,             
-                           c => c.Instructor.User);      
+                           c => c.Instructor,
+                           c => c.Instructor.User);
+
             var entity = result.FirstOrDefault();
             return _mapper.Map<CourseResponseDto>(entity);
         }
@@ -41,15 +43,29 @@ namespace SmartLearning.Application.Services
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
-        // UPDATE COURSE
-        public async Task<bool> UpdateCourseAsync(int id, UpdateCourseDto dto)
+        public async Task<bool> UpdateCourseAsync(int id, UpdateCourseDto dto, string? uploadedImagePath)
         {
-            var course = await _unitOfWork.Repository<Course>().GetByIdAsync(id);
+            var courseRepo = _unitOfWork.Repository<Course>();
+            var instructorRepo = _unitOfWork.Repository<Instructor>();
+
+            var course = await courseRepo.GetByIdAsync(id);
             if (course == null) return false;
 
-            _mapper.Map(dto, course);
+            course.Crs_Name = dto.Crs_Name;
+            course.Crs_Description = dto.Crs_Description;
+            course.Price = dto.Price;
+            course.InstructorId = dto.InstructorId;
 
-            _unitOfWork.Repository<Course>().Update(course);
+            if (!string.IsNullOrWhiteSpace(uploadedImagePath))
+            {
+                course.ImageUrl = uploadedImagePath;
+            }
+            else if (!string.IsNullOrWhiteSpace(dto.ImageUrl))
+            {
+                course.ImageUrl = dto.ImageUrl;
+            }
+
+            courseRepo.Update(course);
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
