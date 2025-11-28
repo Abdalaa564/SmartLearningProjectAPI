@@ -14,17 +14,19 @@ namespace SmartLearning.Core.Model
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
+
         [MaxLength(300)]
         public string? ImageUrl { get; set; }
 
         [Required]
         public int InstructorId { get; set; }   // FK → Instructor
+        public Instructor Instructor { get; set; } = null!;
 
-        public Instructor Instructor { get; set; } = null!; // Course → Instructor (M→1)
-
-        //(M → 1)
         public ICollection<Unit> Units { get; set; } = new List<Unit>();
-        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();  // Course  Students (1 → M)
+
+        // 👈 هنا العلاقة اللي مع Enrollment
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+
         public ICollection<Grades> Grades { get; set; } = new List<Grades>();
 
     }

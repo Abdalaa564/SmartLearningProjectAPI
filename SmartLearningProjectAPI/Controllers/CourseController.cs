@@ -6,10 +6,13 @@ namespace SmartLearningProjectAPI.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
+        private readonly IWebHostEnvironment _env;
 
-        public CourseController(ICourseService courseService)
+
+        public CourseController(ICourseService courseService, IWebHostEnvironment env)
         {
             _courseService = courseService;
+            _env = env;
         }
 
         [HttpGet]
@@ -65,10 +68,33 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdateCourseDto dto)
-            => await _courseService.UpdateCourseAsync(id, dto)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateCourseDto dto)
+        {
+            string? uploadedImagePath = null;
+
+            if (dto.ImageFile != null && dto.ImageFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "images", "courses");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.ImageFile.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.ImageFile.CopyToAsync(stream);
+                }
+
+                uploadedImagePath = $"/images/courses/{fileName}";
+            }
+
+            var result = await _courseService.UpdateCourseAsync(id, dto, uploadedImagePath);
+
+            return result
                 ? Ok("Updated Successfully")
                 : NotFound("Not Found");
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

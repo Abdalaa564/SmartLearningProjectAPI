@@ -8,8 +8,6 @@
         [MaxLength(100)]
         public string? JobTitle { get; set; }
 
-        public int? NumberOfStudents { get; set; }
-
         public double? Rating { get; set; }
 
         [MaxLength(20)]

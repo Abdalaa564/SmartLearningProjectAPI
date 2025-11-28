@@ -39,6 +39,10 @@ builder.Services.AddAutoMapper(typeof(LessonsProfile));
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddAutoMapper(typeof(ResourceProfile));
 
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+
+
+
 //---- External Services
 builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
 builder.Services.AddScoped<IPdfChatService, PdfChatService>();
