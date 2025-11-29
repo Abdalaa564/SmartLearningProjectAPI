@@ -39,33 +39,21 @@ namespace SmartLearningProjectAPI.Controllers
 
 
 
-        // Get current student's enrollments
-        // GET: api/Enrollment/my-enrollments
-        [HttpGet("my-enrollments")]
-       // [Authorize]
-        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetMyEnrollments()
+    
+        [HttpGet("student/{studentId:int}")]
+        public async Task<IActionResult> GetStudentCourses(int studentId)
         {
-            // Get the logged-in user's ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
-
-            // Find the student record for this user
-            // You'll need to implement GetStudentIdByUserIdAsync in your service
-            var studentId = userId; // Assuming studentId == userId for simplicity
-
-            var enrollments = await _enrollmentService.GetStudentCoursesAsync(studentId);
-            return Ok(enrollments);
+            var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
+            return Ok(courses);
         }
 
-    
+
         // Get student enrollments by studentId (Admin/Instructor)
         // GET: api/Enrollment/student/{studentId}
         [HttpGet("student/{studentId}")]
       //  [Authorize(Roles = "Admin,Instructor")]
         [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetStudentEnrollments(string studentId)
+        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetStudentEnrollments(int studentId)
         {
             var enrollments = await _enrollmentService.GetStudentCoursesAsync(studentId);
             return Ok(enrollments);
@@ -112,49 +100,49 @@ namespace SmartLearningProjectAPI.Controllers
         
         // Check if current student is enrolled in a course
         // GET: api/Enrollment/check/{courseId}
-        [HttpGet("check/{courseId}")]
-        [Authorize]
-        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public async Task<ActionResult<bool>> CheckEnrollment(int courseId)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+        //[HttpGet("check/{courseId}")]
+        //[Authorize]
+        //[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        //public async Task<ActionResult<bool>> CheckEnrollment(int courseId)
+        //{
+        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (string.IsNullOrEmpty(userId))
+        //        return Unauthorized();
 
-            var studentId = userId; // Assuming studentId == userId
-            var isEnrolled = await _enrollmentService.IsStudentEnrolledAsync(studentId, courseId);
-            return Ok(isEnrolled);
-        }
+        //    var studentId = userId; // Assuming studentId == userId
+        //    var isEnrolled = await _enrollmentService.IsStudentEnrolledAsync(studentId, courseId);
+        //    return Ok(isEnrolled);
+        //}
 
      
         // Get all courses for current student
         // GET: api/Enrollment/student/my-courses
-        [HttpGet("student/my-courses")]
-       // [Authorize]
-        [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMyCourses()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+       // [HttpGet("student/my-courses")]
+       //// [Authorize]
+       // [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
+       // public async Task<IActionResult> GetMyCourses()
+       // {
+       //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+       //     if (string.IsNullOrEmpty(userId))
+       //         return Unauthorized();
 
-            var studentId = userId; // Assuming studentId == userId
-            var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-            return Ok(courses);
-        }
+       //     var studentId = userId; // Assuming studentId == userId
+       //     var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
+       //     return Ok(courses);
+       // }
 
        
 
         // Get courses for specific student (Admin/Instructor)
         // GET: api/Enrollment/student/{studentId}/courses
-        [HttpGet("student/{studentId}/courses")]
-     //   [Authorize(Roles = "Admin,Instructor")]
-        [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStudentCourses(string studentId)
-        {
-            var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-            return Ok(courses);
-        }
+     //   [HttpGet("student/{studentId}/courses")]
+     ////   [Authorize(Roles = "Admin,Instructor")]
+     //   [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
+     //   public async Task<IActionResult> GetStudentCourses(int studentId)
+     //   {
+     //       var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
+     //       return Ok(courses);
+     //   }
 
        
 

@@ -9,7 +9,7 @@ namespace SmartLearning.Core.Model
         // FK → Student
         [Required]
         [ForeignKey(nameof(Student))]
-        public string StudentId { get; set; }
+        public int StudentId { get; set; }
         public Student Student { get; set; } = null!;
 
         // FK → Course

@@ -21,19 +21,17 @@ namespace SmartLearning.Application.Services
         }
         public async Task<EnrollmentResponseDto> EnrollStudentAsync(EnrollmentRequestDto request)
         {
+            var studentRepo = _unitOfWork.Repository<Student>();
+
 
             // 1. Validate user exists
-            var user = (await _unitOfWork.Repository<ApplicationUser>()
-                    .FindAsync(u => u.Id == request.StudentId))
-                    .FirstOrDefault();
-
-
-            if (user == null)
+            var student = await studentRepo.GetByIdAsync(request.StudentId);
+            if (student == null)
             {
                 return new EnrollmentResponseDto
                 {
                     Success = false,
-                    Message = "User not found"
+                    Message = "Student not found"
                 };
             }
 
@@ -154,7 +152,7 @@ namespace SmartLearning.Application.Services
         }
 
         // ------------------ Get Courses for Student ------------------
-        public async Task<IEnumerable<CourseResponseDto>> GetStudentCoursesAsync(string studentId)
+        public async Task<IEnumerable<CourseResponseDto>> GetStudentCoursesAsync(int studentId)
         {
             var enrollmentRepo = _unitOfWork.Repository<Enrollment>();
 
@@ -213,7 +211,7 @@ namespace SmartLearning.Application.Services
             };
         }
 
-        public async Task<bool> IsStudentEnrolledAsync(string userId, int courseId)
+        public async Task<bool> IsStudentEnrolledAsync(int userId, int courseId)
         {
             var enrollments = await _unitOfWork.Repository<Enrollment>()
                  .FindAsync(e => e.StudentId == userId && e.Crs_Id == courseId);

@@ -5,7 +5,7 @@ namespace SmartLearning.Application.DTOs.EnrollmentDto
     public class EnrollmentDetailsDto
     {
         public int EnrollId { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        public int UserId { get; set; }
         public string StudentName { get; set; } = string.Empty;
         public string StudentEmail { get; set; } = string.Empty;
         public string? StudentPhone { get; set; }

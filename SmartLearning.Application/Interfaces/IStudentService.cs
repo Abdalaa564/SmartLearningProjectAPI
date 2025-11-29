@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.AuthDto;
-using SmartLearning.Application.DTOs.StudentDto;
 
 namespace SmartLearning.Application.Interfaces
 {

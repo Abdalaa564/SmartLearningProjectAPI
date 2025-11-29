@@ -1,5 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.StudentDto;
 
 namespace SmartLearningProjectAPI.Controllers
 {

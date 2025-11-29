@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿
 using SmartLearning.Application.DTOs.QuizDto;
 
 namespace SmartLearningProjectAPI.Controllers

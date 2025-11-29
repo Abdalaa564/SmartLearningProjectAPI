@@ -12,7 +12,7 @@ namespace SmartLearning.Application.Interfaces
 
         Task<bool> UnenrollAsync(int studentId, int courseId);
 
-        Task<IEnumerable<CourseResponseDto>> GetStudentCoursesAsync(string studentId);
+        Task<IEnumerable<CourseResponseDto>> GetStudentCoursesAsync(int studentId);
         Task<int> GetEnrollmentCountForCourseAsync(int courseId);
 
 
@@ -21,7 +21,7 @@ namespace SmartLearning.Application.Interfaces
       //  Task<List<EnrollmentDetailsDto>> GetUserEnrollmentsAsync(string userId);
         Task<EnrollmentDetailsDto?> GetEnrollmentByIdAsync(int enrollId);
         //Task<List<EnrollmentDetailsDto>> GetCourseEnrollmentsAsync(int courseId);
-        Task<bool> IsStudentEnrolledAsync(string userId, int courseId);
+        Task<bool> IsStudentEnrolledAsync(int userId, int courseId);
 
     }
 }
