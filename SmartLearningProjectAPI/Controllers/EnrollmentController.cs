@@ -38,9 +38,9 @@ namespace SmartLearningProjectAPI.Controllers
 
 
 
-
-    
+        // GET: api/Enrollment/student/{studentId}
         [HttpGet("student/{studentId:int}")]
+        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStudentCourses(int studentId)
         {
             var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
@@ -48,25 +48,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
 
-        // Get student enrollments by studentId (Admin/Instructor)
-        // GET: api/Enrollment/student/{studentId}
-        [HttpGet("student/{studentId}")]
-      //  [Authorize(Roles = "Admin,Instructor")]
-        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetStudentEnrollments(int studentId)
-        {
-            var enrollments = await _enrollmentService.GetStudentCoursesAsync(studentId);
-            return Ok(enrollments);
-        }
-
-
-
-
-
-        
-
-
-        
+     
 
         // Get all enrollments for a course (Admin/Instructor)
         // GET: api/Enrollment/course/{courseId}
@@ -95,9 +77,19 @@ namespace SmartLearningProjectAPI.Controllers
             });
         }
 
+        [HttpDelete("{studentId:int}/{courseId:int}")]
+        //   [Authorize]
+        public async Task<IActionResult> UnEnroll(int studentId, int courseId)
+        {
+            var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
+
+            if (!success)
+                return NotFound(new { success = false, message = "Enrollment not found for this student/course" });
+
+            return Ok(new { success = true, message = "Unenrolled successfully" });
+        }
 
 
-        
         // Check if current student is enrolled in a course
         // GET: api/Enrollment/check/{courseId}
         //[HttpGet("check/{courseId}")]
@@ -114,51 +106,44 @@ namespace SmartLearningProjectAPI.Controllers
         //    return Ok(isEnrolled);
         //}
 
-     
+
         // Get all courses for current student
         // GET: api/Enrollment/student/my-courses
-       // [HttpGet("student/my-courses")]
-       //// [Authorize]
-       // [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-       // public async Task<IActionResult> GetMyCourses()
-       // {
-       //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-       //     if (string.IsNullOrEmpty(userId))
-       //         return Unauthorized();
+        // [HttpGet("student/my-courses")]
+        //// [Authorize]
+        // [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
+        // public async Task<IActionResult> GetMyCourses()
+        // {
+        //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //     if (string.IsNullOrEmpty(userId))
+        //         return Unauthorized();
 
-       //     var studentId = userId; // Assuming studentId == userId
-       //     var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-       //     return Ok(courses);
-       // }
+        //     var studentId = userId; // Assuming studentId == userId
+        //     var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
+        //     return Ok(courses);
+        // }
 
-       
+
 
         // Get courses for specific student (Admin/Instructor)
         // GET: api/Enrollment/student/{studentId}/courses
-     //   [HttpGet("student/{studentId}/courses")]
-     ////   [Authorize(Roles = "Admin,Instructor")]
-     //   [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-     //   public async Task<IActionResult> GetStudentCourses(int studentId)
-     //   {
-     //       var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-     //       return Ok(courses);
-     //   }
+        //   [HttpGet("student/{studentId}/courses")]
+        ////   [Authorize(Roles = "Admin,Instructor")]
+        //   [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
+        //   public async Task<IActionResult> GetStudentCourses(int studentId)
+        //   {
+        //       var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
+        //       return Ok(courses);
+        //   }
 
-       
+
 
 
         // Unenroll from a course    
         // DELETE: api/Enrollment/{studentId}/{courseId}
-        [HttpDelete("{studentId:int}/{courseId:int}")]
-        //   [Authorize]
-        public async Task<IActionResult> UnEnroll(int studentId, int courseId)
-        {
-            var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
 
-            if (!success)
-                return NotFound(new { success = false, message = "Enrollment not found for this student/course" });
 
-            return Ok(new { success = true, message = "Unenrolled successfully" });
-        }
+
+
     }
 }
