@@ -1,4 +1,6 @@
 ﻿
+using SmartLearning.Application.DTOs.AuthDto;
+
 namespace SmartLearning.Application.Services
 {
     public class TokenService : ITokenService

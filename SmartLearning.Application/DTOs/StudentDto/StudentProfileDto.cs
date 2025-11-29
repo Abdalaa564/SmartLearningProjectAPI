@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SmartLearning.Application.DTOs
+﻿
+namespace SmartLearning.Application.DTOs.StudentDto
 {
     public class StudentProfileDto
     {

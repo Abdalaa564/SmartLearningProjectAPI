@@ -18,5 +18,7 @@ namespace SmartLearning.Core.Model
 
         public ApplicationUser User { get; set; } = null!;
         public Course Course { get; set; } = new Course();
+
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

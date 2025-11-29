@@ -419,6 +419,49 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.ToTable("Lessons");
                 });
 
+            modelBuilder.Entity("SmartLearning.Core.Model.Payment", b =>
+                {
+                    b.Property<int>("Payment_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Payment_Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Enroll_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Gateway_Response")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("Payment_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payment_Method")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Transaction_Id")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Payment_Id");
+
+                    b.HasIndex("Enroll_Id");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("SmartLearning.Core.Model.Questions", b =>
                 {
                     b.Property<int>("Question_Id")
@@ -827,6 +870,17 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Unit");
                 });
 
+            modelBuilder.Entity("SmartLearning.Core.Model.Payment", b =>
+                {
+                    b.HasOne("SmartLearning.Core.Model.Enrollment", "Enrollment")
+                        .WithMany("Payments")
+                        .HasForeignKey("Enroll_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enrollment");
+                });
+
             modelBuilder.Entity("SmartLearning.Core.Model.Questions", b =>
                 {
                     b.HasOne("SmartLearning.Core.Model.Quiz", "Quiz")
@@ -966,6 +1020,11 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Grades");
 
                     b.Navigation("Units");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Enrollment", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>

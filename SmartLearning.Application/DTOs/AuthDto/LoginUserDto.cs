@@ -1,5 +1,4 @@
-﻿
-namespace SmartLearning.Application.DTOs
+﻿namespace SmartLearning.Application.DTOs.AuthDto
 {
     public class LoginUserDto
     {
