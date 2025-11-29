@@ -1,8 +1,6 @@
 ﻿
 
 
-using SmartLearning.Application.DTOs.EnrollmentDto;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -16,69 +14,25 @@ namespace SmartLearningProjectAPI.Controllers
             _enrollmentService = enrollmentService;
         }
 
-       
-        // Enroll a student in a course with payment
-        // POST: api/Enrollment/enroll
-        [HttpPost("enroll")]
-        [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<EnrollmentResponseDto>> EnrollStudent(
-            [FromBody] EnrollmentRequestDto request)
+        // POST: api/Enrollment
+        // Body:
+        // {
+        //   "studentId": 1,
+        //   "courseId": 5,
+        //   "transactionId": "string"
+        // }
+        [HttpPost]
+        public async Task<IActionResult> Enroll([FromBody] EnrollmentRequestDto request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _enrollmentService.EnrollStudentAsync(request);
-
-            if (!result.Success)
-                return BadRequest(result);
-
+            var result = await _enrollmentService.EnrollAsync(request);
             return Ok(result);
         }
 
-
-
-        // GET: api/Enrollment/student/{studentId}
-        [HttpGet("student/{studentId:int}")]
-        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStudentCourses(int studentId)
-        {
-            var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-            return Ok(courses);
-        }
-
-
-     
-
-        // Get all enrollments for a course (Admin/Instructor)
-        // GET: api/Enrollment/course/{courseId}
-        [HttpGet("course/{courseId}")]
-      //  [Authorize(Roles = "Admin,Instructor")]
-        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetCourseEnrollments(int courseId)
-        {
-            var enrollments = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);
-            return Ok(enrollments);
-        }
-
-      
-        // Get enrollment count for a course
-        // GET: api/Enrollment/course/{courseId}/count
-        [HttpGet("course/{courseId}/count")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEnrollmentCount(int courseId)
-        {
-            var count = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);
-
-            return Ok(new
-            {
-                CourseId = courseId,
-                EnrollmentCount = count
-            });
-        }
-
+        // DELETE: api/Enrollment/{studentId}/{courseId}
         [HttpDelete("{studentId:int}/{courseId:int}")]
-        //   [Authorize]
         public async Task<IActionResult> UnEnroll(int studentId, int courseId)
         {
             var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
@@ -89,61 +43,26 @@ namespace SmartLearningProjectAPI.Controllers
             return Ok(new { success = true, message = "Unenrolled successfully" });
         }
 
-
-        // Check if current student is enrolled in a course
-        // GET: api/Enrollment/check/{courseId}
-        //[HttpGet("check/{courseId}")]
-        //[Authorize]
-        //[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        //public async Task<ActionResult<bool>> CheckEnrollment(int courseId)
-        //{
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(userId))
-        //        return Unauthorized();
-
-        //    var studentId = userId; // Assuming studentId == userId
-        //    var isEnrolled = await _enrollmentService.IsStudentEnrolledAsync(studentId, courseId);
-        //    return Ok(isEnrolled);
-        //}
-
-
-        // Get all courses for current student
-        // GET: api/Enrollment/student/my-courses
-        // [HttpGet("student/my-courses")]
-        //// [Authorize]
-        // [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-        // public async Task<IActionResult> GetMyCourses()
-        // {
-        //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //     if (string.IsNullOrEmpty(userId))
-        //         return Unauthorized();
-
-        //     var studentId = userId; // Assuming studentId == userId
-        //     var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-        //     return Ok(courses);
-        // }
+        // GET: api/Enrollment/student/{studentId}
+        [HttpGet("student/{studentId:int}")]
+        public async Task<IActionResult> GetStudentCourses(int studentId)
+        {
+            var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
+            return Ok(courses);
+        }
 
 
 
-        // Get courses for specific student (Admin/Instructor)
-        // GET: api/Enrollment/student/{studentId}/courses
-        //   [HttpGet("student/{studentId}/courses")]
-        ////   [Authorize(Roles = "Admin,Instructor")]
-        //   [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-        //   public async Task<IActionResult> GetStudentCourses(int studentId)
-        //   {
-        //       var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-        //       return Ok(courses);
-        //   }
+        [HttpGet("course/{courseId}/count")]
+        public async Task<IActionResult> GetEnrollmentCount(int courseId)
+        {
+            var count = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);
 
-
-
-
-        // Unenroll from a course    
-        // DELETE: api/Enrollment/{studentId}/{courseId}
-
-
-
-
+            return Ok(new
+            {
+                CourseId = courseId,
+                EnrollmentCount = count
+            });
+        }
     }
 }

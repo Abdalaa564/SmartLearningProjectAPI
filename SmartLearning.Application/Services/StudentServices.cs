@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace SmartLearning.Application.Services
 {
     public class StudentServices : IStudentService
