@@ -9,7 +9,7 @@ namespace SmartLearning.Core.Model
         // FK → Student
         [Required]
         [ForeignKey(nameof(Student))]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public Student Student { get; set; } = null!;
 
         // FK → Course
@@ -22,6 +22,13 @@ namespace SmartLearning.Core.Model
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Paid_Amount { get; set; }
+
+
+        public ApplicationUser User { get; set; } = null!;
+       // public Course Course { get; set; } = new Course();
+
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
     }
 }
     

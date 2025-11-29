@@ -453,6 +453,7 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.ToTable("Lessons");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("SmartLearning.Core.Model.Meeting", b =>
                 {
                     b.Property<Guid>("Id")
@@ -481,6 +482,49 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.ToTable("Meetings");
+=======
+            modelBuilder.Entity("SmartLearning.Core.Model.Payment", b =>
+                {
+                    b.Property<int>("Payment_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Payment_Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Enroll_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Gateway_Response")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("Payment_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payment_Method")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Transaction_Id")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Payment_Id");
+
+                    b.HasIndex("Enroll_Id");
+
+                    b.ToTable("Payments");
+>>>>>>> master
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Questions", b =>
@@ -910,6 +954,7 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Unit");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("SmartLearning.Core.Model.Meeting", b =>
                 {
                     b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
@@ -919,6 +964,17 @@ namespace SmartLearning.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+=======
+            modelBuilder.Entity("SmartLearning.Core.Model.Payment", b =>
+                {
+                    b.HasOne("SmartLearning.Core.Model.Enrollment", "Enrollment")
+                        .WithMany("Payments")
+                        .HasForeignKey("Enroll_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enrollment");
+>>>>>>> master
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Questions", b =>
@@ -1058,9 +1114,15 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Units");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("SmartLearning.Core.Model.Instructor", b =>
                 {
                     b.Navigation("Courses");
+=======
+            modelBuilder.Entity("SmartLearning.Core.Model.Enrollment", b =>
+                {
+                    b.Navigation("Payments");
+>>>>>>> master
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>
