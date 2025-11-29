@@ -1,6 +1,7 @@
 ﻿
 
 namespace SmartLearning.Application.DTOs
+
 {
     public class TokenResponseDto
     {

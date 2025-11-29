@@ -1,4 +1,5 @@
 ﻿
+
 namespace SmartLearning.Application.Interfaces
 {
     public interface IStudentService

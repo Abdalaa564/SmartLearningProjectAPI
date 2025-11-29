@@ -1,4 +1,6 @@
 ﻿
+using SmartLearning.Application.DTOs.AuthDto;
+
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -80,7 +82,13 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
 
-
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { message = "Logout successful" });
+        }
 
 
 
