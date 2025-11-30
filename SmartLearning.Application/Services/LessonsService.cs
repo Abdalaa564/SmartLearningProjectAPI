@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.Resource;
-
 namespace SmartLearning.Application.Services
 {
     public class LessonsService : ILessonService
@@ -32,7 +30,12 @@ namespace SmartLearning.Application.Services
 
         public async Task<IReadOnlyList<LessonResponseDto>> GetLessonsByUnitIdAsync(int unitId)
         {
-            var lessons = await _unitOfWork.Repository<Lessons>().FindAsync(l => l.Unit_Id == unitId);
+            var lessons = await _unitOfWork.Repository<Lessons>()
+              .FindAsync(
+                  l => l.Unit_Id == unitId,
+                  q => q.Include(l => l.Resources)
+              );
+
             return _mapper.Map<IReadOnlyList<LessonResponseDto>>(lessons);
         }
 

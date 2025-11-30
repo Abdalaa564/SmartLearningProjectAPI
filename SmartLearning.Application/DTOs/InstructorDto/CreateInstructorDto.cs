@@ -16,7 +16,6 @@ namespace SmartLearning.Application.DTOs.InstructorDto
 
         public string? JobTitle { get; set; }
 
-        public int? NumberOfStudents { get; set; }
 
         public double? Rating { get; set; }
         public string? PhoneNumber { get; set; }

@@ -25,14 +25,19 @@ namespace SmartLearning.Infrastructure.Data
         {
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Student>()
+                 .HasOne(s => s.User)
+                 .WithMany()
+                 .HasForeignKey(s => s.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
             // Instructor ↔ User (Identity User) (1 → 1)
             modelBuilder.Entity<Instructor>()
                  .HasOne(i => i.User)
                  .WithMany()
                  .HasForeignKey(i => i.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
-
-
 
             // Instructor ↔ Course (1 → M)
             modelBuilder.Entity<Course>()
@@ -55,12 +60,14 @@ namespace SmartLearning.Infrastructure.Data
                 .HasForeignKey(e => e.Crs_Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Course ↔ Enrollment (Many-to-1)
+            // Student ↔ Enrollment (1 → M)
+            //مكان اللي كان مع ال ApllicationUser 
             modelBuilder.Entity<Enrollment>()
-                .HasOne(e => e.User)
-                .WithMany(u => u.Enrollments)
-                .HasForeignKey(e => e.User_Id)
-                .OnDelete(DeleteBehavior.Cascade);
+               .HasOne(e => e.Student)
+               .WithMany(s => s.Enrollments)
+               .HasForeignKey(e => e.StudentId)
+               .OnDelete(DeleteBehavior.Cascade);
+
 
             // Unit ↔ Lessons (1 → M)
             modelBuilder.Entity<Lessons>()

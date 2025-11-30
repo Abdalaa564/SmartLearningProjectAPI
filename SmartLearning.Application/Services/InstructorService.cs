@@ -44,16 +44,13 @@ namespace SmartLearning.Application.Services
                     .ThenInclude(c => c.Enrollments)
             );
 
-            var instructors = (await repo.FindAsync(u => u.Id == id)).FirstOrDefault();
-
-
-           // var instructor = instructors.FirstOrDefault();
-            if (instructors == null)
+            var instructor = instructors.FirstOrDefault();
+            if (instructor == null)
                 return null;
 
-            return _mapper.Map<InstructorResponseDto>(instructors);
+            return _mapper.Map<InstructorResponseDto>(instructor);
         }
-      
+
         // CREATE
 
         public async Task<InstructorResponseDto> CreateAsync(CreateInstructorDto dto)
@@ -101,7 +98,7 @@ namespace SmartLearning.Application.Services
 
             return _mapper.Map<InstructorResponseDto>(loadedData.First());
         }
-       
+
         // UPDATE
         public async Task<bool> UpdateAsync(int id, UpdateInstructorDto dto)
         {
@@ -109,14 +106,13 @@ namespace SmartLearning.Application.Services
 
             var instructors = await repo.FindAsync(
                 i => i.Id == id,
-                i => i.User
+                q => q.Include(i => i.User)
             );
 
             var instructor = instructors.FirstOrDefault();
             if (instructor == null)
                 return false;
 
-            // AutoMapper هيحدّث بس الفيلدز اللي مش null (لو مجهّز الـ Profile صح)
             _mapper.Map(dto, instructor);
 
             repo.Update(instructor);

@@ -7,7 +7,12 @@ namespace SmartLearning.Application.Mappings
         {
             CreateMap<CreateLessonDto, Lessons>();
             CreateMap<UpdateLessonDto, Lessons>();
-            CreateMap<Lessons, LessonResponseDto>();
+
+            CreateMap<Lessons, LessonResponseDto>()
+                .ForMember(dest => dest.Resources, opt => opt.MapFrom(src => src.Resources));
+
+            CreateMap<Resource, ResourceResponseDto>();
+
             CreateMap<Lessons, LessonDetailsDto>();
         }
     }

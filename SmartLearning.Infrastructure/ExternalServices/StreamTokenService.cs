@@ -2,7 +2,6 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace SmartLearning.Infrastructure.ExternalServices
 {
@@ -13,9 +12,8 @@ namespace SmartLearning.Infrastructure.ExternalServices
 
         public StreamTokenService(IConfiguration config)
         {
-            _apiKey = config["Stream:ApiKey"]!;
+            _apiKey = config["Stream:ApiKey"]!; 
             _apiSecret = config["Stream:ApiSecret"]!;
-
         }
 
         public string CreateUserToken(string userId, string callType, string callId)
