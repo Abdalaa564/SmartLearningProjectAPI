@@ -175,19 +175,27 @@ namespace SmartLearning.Infrastructure.Data
             modelBuilder.Entity<Attendance>()
                 .HasKey(a => a.Attendance_Id);
 
-            // Attendance ↔ User (1 → M)
-            modelBuilder.Entity<Attendance>()
-                .HasOne(a => a.User)
-                .WithMany(u => u.Attendances)
-                .HasForeignKey(a => a.User_Id)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Meeting ↔ User (Identity User) (M → 1)
             modelBuilder.Entity<Meeting>()
                 .HasOne(m => m.User)
                 .WithMany()
                 .HasForeignKey(m => m.CreatedBy)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //for Attendance 
+            // Attendance ↔ Lessons (1 → M)
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Lesson)
+                .WithMany(l => l.Attendances)
+                .HasForeignKey(a => a.Lesson_Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Attendance ↔ Student (1 → M)
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Student)
+                .WithMany(s => s.Attendances)
+                .HasForeignKey(a => a.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }

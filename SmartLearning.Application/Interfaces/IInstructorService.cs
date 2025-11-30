@@ -10,5 +10,8 @@ namespace SmartLearning.Application.Interfaces
         Task<InstructorResponseDto> CreateAsync(CreateInstructorDto dto);
         Task<bool> UpdateAsync(int id, UpdateInstructorDto dto);
         Task<bool> DeleteAsync(int id);
+
+        Task<InstructorResponseDto?> GetByUserIdProfilrAsync(string userId);
+
     }
 }
