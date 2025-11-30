@@ -24,7 +24,6 @@ global using SmartLearning.Application.DTOs.Instructors;
 global using SmartLearning.Application.DTOs.Resource;
 global using Microsoft.AspNetCore.Http;
 global using SmartLearning.Core.Enums;
-global using SmartLearning.Application.DTOs.EnrollDto;
 
 
 

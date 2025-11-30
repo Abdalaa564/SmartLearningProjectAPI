@@ -1,17 +1,21 @@
 ﻿
 
 
+using SmartLearning.Application.DTOs.EnrollmentDto;
+
 namespace SmartLearning.Application.Services
 {
     public class EnrollmentService : IEnrollmentService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
 
-        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper)
+        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _paymentService = paymentService;
         }
 
         // ------------------ Enroll Student ------------------
@@ -218,6 +222,6 @@ namespace SmartLearning.Application.Services
             return $"TXN_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
         }
 
-
+      
     }
 }

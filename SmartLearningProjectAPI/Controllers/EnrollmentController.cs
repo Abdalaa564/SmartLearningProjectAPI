@@ -1,6 +1,8 @@
 ﻿
 
 
+using SmartLearning.Application.DTOs.EnrollmentDto;
+
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -65,17 +67,17 @@ namespace SmartLearningProjectAPI.Controllers
             });
         }
 
-        [HttpDelete("{studentId:int}/{courseId:int}")]
-        //   [Authorize]
-        public async Task<IActionResult> UnEnroll(int studentId, int courseId)
-        {
-            var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
+        //[HttpDelete("{studentId:int}/{courseId:int}")]
+        ////   [Authorize]
+        //public async Task<IActionResult> UnEnroll(int studentId, int courseId)
+        //{
+        //    var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
 
-            if (!success)
-                return NotFound(new { success = false, message = "Enrollment not found for this student/course" });
+        //    if (!success)
+        //        return NotFound(new { success = false, message = "Enrollment not found for this student/course" });
 
-            return Ok(new { success = true, message = "Unenrolled successfully" });
-        }
+        //    return Ok(new { success = true, message = "Unenrolled successfully" });
+        //}
 
 
         ////Check if current student is enrolled in a course
