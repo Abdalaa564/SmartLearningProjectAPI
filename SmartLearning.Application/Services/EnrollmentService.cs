@@ -100,6 +100,7 @@ namespace SmartLearning.Application.Services
             };
 
             await _unitOfWork.Repository<Enrollment>().AddAsync(enrollment);
+            await _unitOfWork.CompleteAsync();
 
             // 8. Create payment record
             var payment = new Payment
@@ -182,7 +183,8 @@ namespace SmartLearning.Application.Services
             var enrollments = await _unitOfWork.Repository<Enrollment>()
                  .FindAsync(
                      e => e.Enroll_Id == enrollId,
-                     e => e.User,
+                     e => e.Student,
+                     e=> e.Student.User,    
                     e => e.Course,
                     e => e.Payments
                  );
@@ -197,9 +199,9 @@ namespace SmartLearning.Application.Services
             {
                 EnrollId = enrollment.Enroll_Id,
                 UserId = enrollment.StudentId,
-                //  StudentName = enrollment.User?.FullName ?? enrollment.User?.UserName ?? "Unknown",
-                StudentEmail = enrollment.User?.Email ?? string.Empty,
-                StudentPhone = enrollment.User?.PhoneNumber,
+                StudentEmail = enrollment.Student?.User?.Email ?? string.Empty,
+                StudentPhone = enrollment.Student?.User?.PhoneNumber,
+                StudentName = enrollment.Student?.User?.UserName,
                 CourseId = enrollment.Crs_Id,
                 CourseName = enrollment.Course?.Crs_Name ?? string.Empty,
                 CoursePrice = enrollment.Course?.Price ?? 0,

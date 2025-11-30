@@ -193,6 +193,14 @@ namespace SmartLearning.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(m => m.CreatedBy)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Enrollment ↔ Payments (1 → M)
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Enrollment)
+                .WithMany(e => e.Payments)
+                .HasForeignKey(p => p.Enroll_Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
     }

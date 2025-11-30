@@ -90,8 +90,8 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
 
-        // Check if current student is enrolled in a course
-        // GET: api/Enrollment/check/{courseId}
+        ////Check if current student is enrolled in a course
+        //// GET: api/Enrollment/check/{courseId}
         //[HttpGet("check/{courseId}")]
         //[Authorize]
         //[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
@@ -101,7 +101,9 @@ namespace SmartLearningProjectAPI.Controllers
         //    if (string.IsNullOrEmpty(userId))
         //        return Unauthorized();
 
-        //    var studentId = userId; // Assuming studentId == userId
+        //    if (!int.TryParse(userId, out int studentId))
+        //        return BadRequest("Invalid user ID format.");
+
         //    var isEnrolled = await _enrollmentService.IsStudentEnrolledAsync(studentId, courseId);
         //    return Ok(isEnrolled);
         //}
