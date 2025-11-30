@@ -20,12 +20,7 @@ namespace SmartLearning.Infrastructure.Data
         public DbSet<Choice> Choices { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Student> Students { get; set; }
-
         public DbSet<Meeting> Meetings { get; set; }
-
-
-        public DbSet<Payment> Payments { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -180,13 +175,6 @@ namespace SmartLearning.Infrastructure.Data
             modelBuilder.Entity<Attendance>()
                 .HasKey(a => a.Attendance_Id);
 
-            // Attendance ↔ User (1 → M)
-            modelBuilder.Entity<Attendance>()
-                .HasOne(a => a.User)
-                .WithMany(u => u.Attendances)
-                .HasForeignKey(a => a.User_Id)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Meeting ↔ User (Identity User) (M → 1)
             modelBuilder.Entity<Meeting>()
                 .HasOne(m => m.User)
@@ -201,6 +189,21 @@ namespace SmartLearning.Infrastructure.Data
                 .HasForeignKey(p => p.Enroll_Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
+            //for Attendance 
+            // Attendance ↔ Lessons (1 → M)
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Lesson)
+                .WithMany(l => l.Attendances)
+                .HasForeignKey(a => a.Lesson_Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Attendance ↔ Student (1 → M)
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Student)
+                .WithMany(s => s.Attendances)
+                .HasForeignKey(a => a.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }

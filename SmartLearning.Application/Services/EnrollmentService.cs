@@ -1,30 +1,27 @@
 ﻿
 
 
-using SmartLearning.Application.DTOs.EnrollmentDto;
-
-
 namespace SmartLearning.Application.Services
 {
     public class EnrollmentService : IEnrollmentService
     {
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IPaymentService _paymentService;
 
-        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IPaymentService paymentService)
+        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _paymentService = paymentService;
         }
-        public async Task<EnrollmentResponseDto> EnrollStudentAsync(EnrollmentRequestDto request)
+
+        // ------------------ Enroll Student ------------------
+        public async Task<EnrollmentResponseDto> EnrollAsync(EnrollmentRequestDto request)
         {
+            var courseRepo = _unitOfWork.Repository<Course>();
             var studentRepo = _unitOfWork.Repository<Student>();
+            var enrollmentRepo = _unitOfWork.Repository<Enrollment>();
 
-
-            // 1. Validate user exists
+            // 1) تأكد إن الطالب موجود
             var student = await studentRepo.GetByIdAsync(request.StudentId);
             if (student == null)
             {
@@ -35,10 +32,8 @@ namespace SmartLearning.Application.Services
                 };
             }
 
-            // 2. Validate course exists
-            var course = await _unitOfWork.Repository<Course>()
-                .GetByIdAsync(request.CourseId);
-
+            // 2) تأكد إن الكورس موجود
+            var course = await courseRepo.GetByIdAsync(request.CourseId);
             if (course == null)
             {
                 return new EnrollmentResponseDto
@@ -48,11 +43,12 @@ namespace SmartLearning.Application.Services
                 };
             }
 
-            // 3. Check if already enrolled
-            var existingEnrollment = await _unitOfWork.Repository<Enrollment>()
-                .FindAsync(e => e.StudentId == request.StudentId && e.Crs_Id == request.CourseId);
+            // 3) تأكد إنه مش مسجل قبل كده في نفس الكورس
+            var exists = await enrollmentRepo.FindAsync(
+                e => e.Crs_Id == request.CourseId && e.StudentId == request.StudentId
+            );
 
-            if (existingEnrollment.Any())
+            if (exists.Any())
             {
                 return new EnrollmentResponseDto
                 {
@@ -117,25 +113,22 @@ namespace SmartLearning.Application.Services
             await _unitOfWork.Repository<Payment>().AddAsync(payment);
 
             // 9. Commit transaction
+            await enrollmentRepo.AddAsync(enrollment);
             await _unitOfWork.CompleteAsync();
 
-            //_logger.LogInformation(
-            //    "User {UserId} successfully enrolled in course {CourseId}. Transaction: {TransactionId}",
-            //    request.UserId, request.CourseId, transactionId);
-
+            // 6) نرجع Response
             return new EnrollmentResponseDto
             {
                 Success = true,
-                Message = "Enrollment successful! Welcome to the course.",
+                Message = "Enrollment completed successfully",
                 EnrollmentId = enrollment.Enroll_Id,
                 EnrollmentDate = enrollment.Enroll_Date,
                 TransactionId = transactionId,
                 PaidAmount = enrollment.Paid_Amount
             };
-
         }
 
-      
+        // ------------------ UnEnroll Student ------------------
         public async Task<bool> UnenrollAsync(int studentId, int courseId)
         {
             var repo = _unitOfWork.Repository<Enrollment>();
@@ -226,156 +219,5 @@ namespace SmartLearning.Application.Services
         }
 
 
-        // ------------------ Enroll Student ------------------
-        //public async Task<EnrollmentResponseDto> EnrollAsync(EnrollmentRequestDto request)
-        //{
-        //    var courseRepo = _unitOfWork.Repository<Course>();
-        //    var studentRepo = _unitOfWork.Repository<Student>();
-        //    var enrollmentRepo = _unitOfWork.Repository<Enrollment>();
-
-        //    // 1) تأكد إن الطالب موجود
-        //    var student = await studentRepo.GetByIdAsync(request.StudentId);
-        //    if (student == null)
-        //    {
-        //        return new EnrollmentResponseDto
-        //        {
-        //            Success = false,
-        //            Message = "Student not found"
-        //        };
-        //    }
-
-        //    // 2) تأكد إن الكورس موجود
-        //    var course = await courseRepo.GetByIdAsync(request.CourseId);
-        //    if (course == null)
-        //    {
-        //        return new EnrollmentResponseDto
-        //        {
-        //            Success = false,
-        //            Message = "Course not found"
-        //        };
-        //    }
-
-        //    // 3) تأكد إنه مش مسجل قبل كده في نفس الكورس
-        //    var exists = await enrollmentRepo.FindAsync(
-        //        e => e.Crs_Id == request.CourseId && e.StudentId == request.StudentId
-        //    );
-
-        //    if (exists.Any())
-        //    {
-        //        return new EnrollmentResponseDto
-        //        {
-        //            Success = false,
-        //            Message = "Student is already enrolled in this course"
-        //        };
-        //    }
-
-        //    // 4) السعر من الكورس
-        //    var paidAmount = course.Price;
-        //    var transactionId = request.TransactionId ?? Guid.NewGuid().ToString("N");
-
-        //    // 5) إنشاء Enrollment
-        //    var enrollment = new Enrollment
-        //    {
-        //        StudentId = request.StudentId,
-        //        Crs_Id = request.CourseId,
-        //        Enroll_Date = DateTime.UtcNow,
-        //        Paid_Amount = paidAmount
-        //    };
-
-        //    await enrollmentRepo.AddAsync(enrollment);
-        //    await _unitOfWork.CompleteAsync();
-
-        //    // 6) نرجع Response
-        //    return new EnrollmentResponseDto
-        //    {
-        //        Success = true,
-        //        Message = "Enrollment completed successfully",
-        //        EnrollmentId = enrollment.Enroll_Id,
-        //        EnrollmentDate = enrollment.Enroll_Date,
-        //        PaidAmount = paidAmount,
-        //        TransactionId = transactionId
-        //    };
-        //}
-
-        // ------------------ UnEnroll Student ------------------
-        //public async Task<List<EnrollmentDetailsDto>> GetCourseEnrollmentsAsync(int courseId)
-        //{
-        //    var enrollments = await _unitOfWork.Repository<Enrollment>()
-        //       .FindAsync(
-        //            e => e.Crs_Id == courseId,
-        //            e => e.User,
-        //            e => e.Course,
-        //            e => e.Payments
-        //        );
-
-
-        //    var enrollmentDtos = new List<EnrollmentDetailsDto>();
-
-        //    foreach (var enrollment in enrollments.OrderByDescending(e => e.Enroll_Date))
-        //    {
-        //        var latestPayment = enrollment.Payments?.OrderByDescending(p => p.Payment_Date).FirstOrDefault();
-
-        //        enrollmentDtos.Add(new EnrollmentDetailsDto
-        //        {
-        //            EnrollId = enrollment.Enroll_Id,
-        //            UserId = enrollment.StudentId,
-        //           // StudentName = enrollment.User?. ?? enrollment.User?.UserName ?? "Unknown",
-        //            StudentEmail = enrollment.User?.Email ?? string.Empty,
-        //            StudentPhone = enrollment.User?.PhoneNumber,
-        //            CourseId = enrollment.Crs_Id,
-        //            CourseName = enrollment.Course?.Crs_Name ?? string.Empty,
-        //            CoursePrice = enrollment.Course?.Price ?? 0,
-        //            EnrollDate = enrollment.Enroll_Date,
-        //            PaidAmount = enrollment.Paid_Amount,
-        //            PaymentStatus = latestPayment?.Status,
-        //            TransactionId = latestPayment?.Transaction_Id,
-        //            PaymentDate = latestPayment?.Payment_Date
-        //        });
-        //    }
-
-        //    return enrollmentDtos;
-        //}
-
-
-
-        //public async Task<List<EnrollmentDetailsDto>> GetUserEnrollmentsAsync(string userId)
-        //{
-        //    var enrollments = await _unitOfWork.Repository<Enrollment>()
-        //         .FindAsync(
-        //             e => e.StudentId == userId,
-        //              e => e.User,
-        //            e => e.Course,
-        //            e => e.Payments
-        //         );
-
-        //    var enrollmentDtos = new List<EnrollmentDetailsDto>();
-
-        //    foreach (var enrollment in enrollments.OrderByDescending(e => e.Enroll_Date))
-        //    {
-        //        var latestPayment = enrollment.Payments?.OrderByDescending(p => p.Payment_Date).FirstOrDefault();
-
-        //        enrollmentDtos.Add(new EnrollmentDetailsDto
-        //        {
-        //            EnrollId = enrollment.Enroll_Id,
-        //            UserId = enrollment.StudentId,
-        //           // StudentName = enrollment.User?.FullName ?? enrollment.User?.UserName ?? "Unknown",
-        //            StudentEmail = enrollment.User?.Email ?? string.Empty,
-        //            StudentPhone = enrollment.User?.PhoneNumber,
-        //            CourseId = enrollment.Crs_Id,
-        //            CourseName = enrollment.Course?.Crs_Name ?? string.Empty,
-        //            CoursePrice = enrollment.Course?.Price ?? 0,
-        //            EnrollDate = enrollment.Enroll_Date,
-        //            PaidAmount = enrollment.Paid_Amount,
-        //            PaymentStatus = latestPayment?.Status,
-        //            TransactionId = latestPayment?.Transaction_Id,
-        //            PaymentDate = latestPayment?.Payment_Date
-        //        });
-        //    }
-
-        //    return enrollmentDtos;
-        //}
-
-
     }
 }
-

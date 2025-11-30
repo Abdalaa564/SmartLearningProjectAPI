@@ -12,9 +12,8 @@ namespace SmartLearning.Core.Model
         public Lessons Lesson { get; set; } = null!;
 
         [Required]
-        public string User_Id { get; set; } = string.Empty;
-
-        public ApplicationUser User { get; set; } = null!;
+        public int StudentId { get; set; }
+        public Student Student { get; set; } = null!;
 
         //public ICollection<Lessons> Lessons { get; set; } = new List<Lessons>();
     }

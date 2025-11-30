@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace SmartLearning.Application.Services
 {
     public class StudentServices : IStudentService
@@ -65,6 +63,9 @@ namespace SmartLearning.Application.Services
                     Message = string.Join(", ", result.Errors.Select(e => e.Description))
                 };
             }
+
+            // 👈 هنا ندي اليوزر Role Student
+            await _userManager.AddToRoleAsync(applicationUser, "Student");
 
 
             // await _userManager.AddToRoleAsync(applicationUser, "Student");

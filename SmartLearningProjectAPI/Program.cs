@@ -36,12 +36,11 @@ builder.Services.AddAutoMapper(typeof(UnitProfile));
 
 builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
-
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddAutoMapper(typeof(ResourceProfile));
 
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
 
 

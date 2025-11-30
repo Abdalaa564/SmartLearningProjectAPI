@@ -1,8 +1,6 @@
 ﻿
 
 
-using SmartLearning.Application.DTOs.EnrollmentDto;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -16,31 +14,37 @@ namespace SmartLearningProjectAPI.Controllers
             _enrollmentService = enrollmentService;
         }
 
-       
-        // Enroll a student in a course with payment
-        // POST: api/Enrollment/enroll
-        [HttpPost("enroll")]
-        [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<EnrollmentResponseDto>> EnrollStudent(
-            [FromBody] EnrollmentRequestDto request)
+        // POST: api/Enrollment
+        // Body:
+        // {
+        //   "studentId": 1,
+        //   "courseId": 5,
+        //   "transactionId": "string"
+        // }
+        [HttpPost]
+        public async Task<IActionResult> Enroll([FromBody] EnrollmentRequestDto request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _enrollmentService.EnrollStudentAsync(request);
-
-            if (!result.Success)
-                return BadRequest(result);
-
+            var result = await _enrollmentService.EnrollAsync(request);
             return Ok(result);
         }
 
+        // DELETE: api/Enrollment/{studentId}/{courseId}
+        [HttpDelete("{studentId:int}/{courseId:int}")]
+        public async Task<IActionResult> UnEnroll(int studentId, int courseId)
+        {
+            var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
 
+            if (!success)
+                return NotFound(new { success = false, message = "Enrollment not found for this student/course" });
+
+            return Ok(new { success = true, message = "Unenrolled successfully" });
+        }
 
         // GET: api/Enrollment/student/{studentId}
         [HttpGet("student/{studentId:int}")]
-        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStudentCourses(int studentId)
         {
             var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
@@ -48,24 +52,8 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
 
-     
 
-        // Get all enrollments for a course (Admin/Instructor)
-        // GET: api/Enrollment/course/{courseId}
-        [HttpGet("course/{courseId}")]
-      //  [Authorize(Roles = "Admin,Instructor")]
-        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetCourseEnrollments(int courseId)
-        {
-            var enrollments = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);
-            return Ok(enrollments);
-        }
-
-      
-        // Get enrollment count for a course
-        // GET: api/Enrollment/course/{courseId}/count
         [HttpGet("course/{courseId}/count")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetEnrollmentCount(int courseId)
         {
             var count = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);

@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.AuthDto;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -12,8 +10,10 @@ namespace SmartLearningProjectAPI.Controllers
         private readonly IStudentService _studentService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IInstructorService _instructorService;
 
         public AccountController(
+            IInstructorService instructorService,
             UserManager<ApplicationUser> userManager, 
             IConfiguration config, IStudentService studentService,
             SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
@@ -23,6 +23,7 @@ namespace SmartLearningProjectAPI.Controllers
             _studentService = studentService;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _instructorService = instructorService;
         }
 
         [HttpPost("register")]
@@ -51,19 +52,34 @@ namespace SmartLearningProjectAPI.Controllers
             if (!result.Succeeded)
                 return Unauthorized(new { message = "Invalid credentials" });
 
-           
-                var profile = await _studentService.GetStudentProfileAsync(user.Id);
-               var token = await _tokenService.GenerateTokenAsync(user);
+            var roles = await userManager.GetRolesAsync(user);
+            // 4) لو Student → هات StudentProfile
+            StudentProfileDto? profile = null;
 
+            if (roles.Contains("Student"))
+            {
+                profile = await _studentService.GetStudentProfileAsync(user.Id);
+            }
+            InstructorResponseDto? instructorProfile = null;
+
+            if (roles.Contains("Instructor"))
+            {
+                instructorProfile = await _instructorService.GetByUserIdProfilrAsync(user.Id);
+            }
+
+            var token = await _tokenService.GenerateTokenAsync(user);
+
+            // 6) نرجّع الرد
             return Ok(new AuthResponseDto
-                {
-                    Success = true,
-                    Message = "Login successful",
-                    Data = profile,
-                    Token= token
+            {
+                Success = true,
+                Message = "Login successful",
+                Data = profile,   // للـ Instructor هتبقى null عادي
+                Token = token
             });
-           
         }
+           
+        
 
         [Authorize]
         [HttpGet("profile")]
@@ -76,19 +92,31 @@ namespace SmartLearningProjectAPI.Controllers
 
            
                 var profile = await _studentService.GetStudentProfileAsync(userId);
-                return Ok(profile);
+            if (profile == null)
+                return NotFound(new { message = "Student profile not found for this user" });
+            return Ok(profile);
            
            
         }
-
-
-        [HttpPost("logout")]
-        [Authorize]
-        public async Task<IActionResult> Logout()
+        [Authorize(Roles = "Instructor")]
+        [HttpGet("instructor-profile")]
+        public async Task<ActionResult<InstructorResponseDto>> GetMyInstructorProfile(
+    [FromServices] IInstructorService instructorService)
         {
-            await _signInManager.SignOutAsync();
-            return Ok(new { message = "Logout successful" });
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var instructor = await instructorService.GetByUserIdProfilrAsync(userId);
+            if (instructor == null)
+                return NotFound(new { message = "Instructor profile not found" });
+
+            return Ok(instructor);
         }
+
+
+
+
 
 
 
