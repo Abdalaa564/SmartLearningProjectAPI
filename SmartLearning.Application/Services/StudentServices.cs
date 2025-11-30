@@ -64,6 +64,9 @@ namespace SmartLearning.Application.Services
                 };
             }
 
+            // 👈 هنا ندي اليوزر Role Student
+            await _userManager.AddToRoleAsync(applicationUser, "Student");
+
 
             // await _userManager.AddToRoleAsync(applicationUser, "Student");
 

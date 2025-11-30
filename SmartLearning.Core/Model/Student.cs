@@ -42,5 +42,9 @@ namespace SmartLearning.Core.Model
         [ForeignKey(nameof(User))]
         public string UserId { get; set; } = string.Empty;
         public ApplicationUser User { get; set; } = null!;
+
+        // new
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
     }
 }

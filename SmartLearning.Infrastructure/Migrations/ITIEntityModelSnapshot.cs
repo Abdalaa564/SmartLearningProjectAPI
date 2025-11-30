@@ -240,15 +240,14 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Property<int>("Lesson_Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("User_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
                     b.HasKey("Attendance_Id");
 
                     b.HasIndex("Lesson_Id");
 
-                    b.HasIndex("User_Id");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Attendance");
                 });
@@ -810,15 +809,15 @@ namespace SmartLearning.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                    b.HasOne("SmartLearning.Core.Model.Student", "Student")
                         .WithMany("Attendances")
-                        .HasForeignKey("User_Id")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Lesson");
 
-                    b.Navigation("User");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Choice", b =>
@@ -1091,6 +1090,13 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("StudentAnswers");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.Student", b =>
+                {
+                    b.Navigation("Attendances");
+
+                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Unit", b =>
