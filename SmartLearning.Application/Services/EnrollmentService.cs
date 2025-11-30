@@ -1,17 +1,21 @@
 ﻿
 
 
+using SmartLearning.Application.DTOs.EnrollmentDto;
+
 namespace SmartLearning.Application.Services
 {
     public class EnrollmentService : IEnrollmentService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
 
-        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper)
+        public EnrollmentService(IUnitOfWork unitOfWork, IMapper mapper, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _paymentService = paymentService;
         }
 
         // ------------------ Enroll Student ------------------
@@ -57,19 +61,62 @@ namespace SmartLearning.Application.Services
                 };
             }
 
-            // 4) السعر من الكورس
-            var paidAmount = course.Price;
-            var transactionId = request.TransactionId ?? Guid.NewGuid().ToString("N");
+            // 4. Validate payment amount
+            if (request.Payment.Amount != course.Price)
+            {
+                return new EnrollmentResponseDto
+                {
+                    Success = false,
+                    Message = $"Payment amount ({request.Payment.Amount:C}) must match course price ({course.Price:C})"
+                };
+            }
 
-            // 5) إنشاء Enrollment
+            // 5. Generate transaction ID
+            var transactionId = GenerateTransactionId();
+
+            // 6. Process payment
+            var paymentResult = await _paymentService.ProcessPaymentAsync(
+                          request.Payment,
+                         transactionId,
+                         course.Crs_Name);
+
+
+            if (!paymentResult.Success)
+            {
+                return new EnrollmentResponseDto
+                {
+                    Success = false,
+                    Message = $"Payment failed: {paymentResult.Message}"
+                };
+            }
+
+            // 7. Create enrollment
             var enrollment = new Enrollment
             {
                 StudentId = request.StudentId,
                 Crs_Id = request.CourseId,
                 Enroll_Date = DateTime.UtcNow,
-                Paid_Amount = paidAmount
+                Paid_Amount = request.Payment.Amount
             };
 
+            await _unitOfWork.Repository<Enrollment>().AddAsync(enrollment);
+            await _unitOfWork.CompleteAsync();
+
+            // 8. Create payment record
+            var payment = new Payment
+            {
+                Enroll_Id = enrollment.Enroll_Id,
+                Amount = request.Payment.Amount,
+                Payment_Method = request.Payment.PaymentMethod,
+                Transaction_Id = transactionId,
+                Payment_Date = DateTime.UtcNow,
+                Status = "Completed",
+                Gateway_Response = paymentResult.GatewayResponse
+            };
+
+            await _unitOfWork.Repository<Payment>().AddAsync(payment);
+
+            // 9. Commit transaction
             await enrollmentRepo.AddAsync(enrollment);
             await _unitOfWork.CompleteAsync();
 
@@ -80,8 +127,8 @@ namespace SmartLearning.Application.Services
                 Message = "Enrollment completed successfully",
                 EnrollmentId = enrollment.Enroll_Id,
                 EnrollmentDate = enrollment.Enroll_Date,
-                PaidAmount = paidAmount,
-                TransactionId = transactionId
+                TransactionId = transactionId,
+                PaidAmount = enrollment.Paid_Amount
             };
         }
 
@@ -125,9 +172,56 @@ namespace SmartLearning.Application.Services
         {
             var repo = _unitOfWork.Repository<Enrollment>();
             var enrollments = await repo.FindAsync(e => e.Crs_Id == courseId);
-            return enrollments.Count;
+            return enrollments.Count();
         }
 
+        public async Task<EnrollmentDetailsDto?> GetEnrollmentByIdAsync(int enrollId)
+        {
+            var enrollments = await _unitOfWork.Repository<Enrollment>()
+                 .FindAsync(
+                     e => e.Enroll_Id == enrollId,
+                     e => e.Student,
+                     e=> e.Student.User,    
+                    e => e.Course,
+                    e => e.Payments
+                 );
 
+            var enrollment = enrollments.FirstOrDefault();
+            if (enrollment == null)
+                return null;
+
+            var latestPayment = enrollment.Payments?.OrderByDescending(p => p.Payment_Date).FirstOrDefault();
+
+            return new EnrollmentDetailsDto
+            {
+                EnrollId = enrollment.Enroll_Id,
+                UserId = enrollment.StudentId,
+                StudentEmail = enrollment.Student?.User?.Email ?? string.Empty,
+                StudentPhone = enrollment.Student?.User?.PhoneNumber,
+                StudentName = enrollment.Student?.User?.UserName,
+                CourseId = enrollment.Crs_Id,
+                CourseName = enrollment.Course?.Crs_Name ?? string.Empty,
+                CoursePrice = enrollment.Course?.Price ?? 0,
+                EnrollDate = enrollment.Enroll_Date,
+                PaidAmount = enrollment.Paid_Amount,
+                PaymentStatus = latestPayment?.Status,
+                TransactionId = latestPayment?.Transaction_Id,
+                PaymentDate = latestPayment?.Payment_Date
+            };
+        }
+
+        public async Task<bool> IsStudentEnrolledAsync(int userId, int courseId)
+        {
+            var enrollments = await _unitOfWork.Repository<Enrollment>()
+                 .FindAsync(e => e.StudentId == userId && e.Crs_Id == courseId);
+
+            return enrollments.Any();
+        }
+        private string GenerateTransactionId()
+        {
+            return $"TXN_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
+        }
+
+      
     }
 }

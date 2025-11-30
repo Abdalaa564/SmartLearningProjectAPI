@@ -1,6 +1,7 @@
 ﻿
 
-using SmartLearning.Application.DTOs.EnrollDto;
+
+using SmartLearning.Application.DTOs.EnrollmentDto;
 
 namespace SmartLearning.Application.Interfaces
 {
