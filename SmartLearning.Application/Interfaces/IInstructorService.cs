@@ -13,5 +13,7 @@ namespace SmartLearning.Application.Interfaces
 
         Task<InstructorResponseDto?> GetByUserIdProfilrAsync(string userId);
 
+        Task<int> GetInstructorsCountAsync();
+
     }
 }

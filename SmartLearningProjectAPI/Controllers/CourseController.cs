@@ -101,5 +101,13 @@ namespace SmartLearningProjectAPI.Controllers
             => await _courseService.DeleteCourseAsync(id)
                 ? Ok("Deleted Successfully")
                 : NotFound("Not Found");
+
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCoursesCount()
+        {
+            var total = await _courseService.GetCoursesCountAsync();
+            return Ok(new { totalCourses = total });
+        }
+
     }
 }

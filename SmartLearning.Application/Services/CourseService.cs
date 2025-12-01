@@ -78,5 +78,11 @@ namespace SmartLearning.Application.Services
             _unitOfWork.Repository<Course>().Remove(course);
             return await _unitOfWork.CompleteAsync() > 0;
         }
+        public async Task<int> GetCoursesCountAsync()
+        {
+            var courses = await _unitOfWork.Repository<Course>().GetAllAsync();
+            return courses.Count;
+        }
+
     }
 }
