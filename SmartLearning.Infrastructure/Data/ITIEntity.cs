@@ -21,6 +21,7 @@ namespace SmartLearning.Infrastructure.Data
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Meeting> Meetings { get; set; }
+
         public DbSet<Payment> Payments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

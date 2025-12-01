@@ -19,13 +19,13 @@ namespace SmartLearning.Application.Services
         }
 
         // ------------------ Enroll Student ------------------
-        public async Task<EnrollmentResponseDto> EnrollAsync(EnrollmentRequestDto request)
+        public async Task<EnrollmentResponseDto> EnrollStudentAsync(EnrollmentRequestDto request)
         {
             var courseRepo = _unitOfWork.Repository<Course>();
             var studentRepo = _unitOfWork.Repository<Student>();
             var enrollmentRepo = _unitOfWork.Repository<Enrollment>();
 
-            // 1) تأكد إن الطالب موجود
+            
             var student = await studentRepo.GetByIdAsync(request.StudentId);
             if (student == null)
             {
@@ -36,7 +36,7 @@ namespace SmartLearning.Application.Services
                 };
             }
 
-            // 2) تأكد إن الكورس موجود
+          
             var course = await courseRepo.GetByIdAsync(request.CourseId);
             if (course == null)
             {
@@ -47,7 +47,6 @@ namespace SmartLearning.Application.Services
                 };
             }
 
-            // 3) تأكد إنه مش مسجل قبل كده في نفس الكورس
             var exists = await enrollmentRepo.FindAsync(
                 e => e.Crs_Id == request.CourseId && e.StudentId == request.StudentId
             );
@@ -115,10 +114,6 @@ namespace SmartLearning.Application.Services
             };
 
             await _unitOfWork.Repository<Payment>().AddAsync(payment);
-
-            // 9. Commit transaction
-            await enrollmentRepo.AddAsync(enrollment);
-            await _unitOfWork.CompleteAsync();
 
             // 6) نرجع Response
             return new EnrollmentResponseDto

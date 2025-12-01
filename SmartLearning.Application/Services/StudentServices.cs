@@ -1,4 +1,5 @@
 ﻿
+
 namespace SmartLearning.Application.Services
 {
     public class StudentServices : IStudentService
@@ -17,6 +18,41 @@ namespace SmartLearning.Application.Services
             _userManager = userManager;
             _tokenService = tokenService;
         }
+        // DELETE STUDENT
+        public async Task<bool> DeleteStudentAsync(string userId)
+        {
+            var students = await _unitOfWork.Repository<Student>()
+             .FindAsync(s => s.UserId == userId);
+
+            var student = students.FirstOrDefault();
+            if (student == null)
+                throw new Exception("Student not found");
+
+            _unitOfWork.Repository<Student>().Remove(student);
+            await _unitOfWork.CompleteAsync();
+
+            
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+                await _userManager.DeleteAsync(user);
+
+            return true;
+        }
+        // GET ALL STUDENTS
+        public async Task<IEnumerable<StudentProfileDto>> GetAllStudentsAsync()
+        {
+            var students = await _unitOfWork.Repository<Student>()
+            .GetAllAsync(
+                query=> 
+                query.Include(s => s.User)
+                .Include(s => s.Enrollments)
+                .ThenInclude(e => e.Course)
+
+             );
+
+            return _mapper.Map<IEnumerable<StudentProfileDto>>(students);
+        }
+        // GET STUDENT PROFILE BY USER ID
         public async Task<StudentProfileDto> GetStudentProfileAsync(string userId)
         {
             var user = await _unitOfWork.Repository<Student>()
@@ -30,7 +66,7 @@ namespace SmartLearning.Application.Services
             var profileDto = _mapper.Map<StudentProfileDto>(foundUser);
             return profileDto;
         }
-
+        // REGISTER STUDENT
         public async Task<AuthResponseDto> RegisterStudentAsync(RegisterStudentDto registerDto)
         {
             var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
@@ -64,11 +100,11 @@ namespace SmartLearning.Application.Services
                 };
             }
 
-            // 👈 هنا ندي اليوزر Role Student
+            // Role Student
             await _userManager.AddToRoleAsync(applicationUser, "Student");
 
 
-            // await _userManager.AddToRoleAsync(applicationUser, "Student");
+            
 
             var student = new Student
             {
@@ -98,7 +134,7 @@ namespace SmartLearning.Application.Services
                 Token = token
             };
         }
-
+        // UPDATE STUDENT PROFILE
         public async Task<StudentProfileDto> UpdateStudentAsync(string userId, StudentUpdateDto updateDto)
         {
             var students = await _unitOfWork.Repository<Student>()
