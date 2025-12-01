@@ -36,6 +36,14 @@ namespace SmartLearningProjectAPI.Controllers
                 return Ok(new { success = true, message = "Profile updated successfully", data = profile });
            
         }
+
+        // number of all student 
+        [HttpGet("count")]
+        public async Task<IActionResult> GetStudentsCount()
+        {
+            var count = await _studentService.GetStudentsCountAsync();
+            return Ok(new { totalStudents = count });
+        }
     }
 }
 

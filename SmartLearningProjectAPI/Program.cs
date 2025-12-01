@@ -33,14 +33,21 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddAutoMapper(typeof(CourseProfile));
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddAutoMapper(typeof(UnitProfile));
-builder.Services.AddScoped<IRatingService, RatingService>();
+
 builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddAutoMapper(typeof(ResourceProfile));
 
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+
 //---- External Services
 builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
+builder.Services.AddScoped<IPdfChatService, PdfChatService>();
 
 builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddAutoMapper(typeof(MeetingProfile));
@@ -54,7 +61,7 @@ var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
 
 Console.WriteLine($"Secret: {jwtSettings["Secret"]}");
 Console.WriteLine($"Issuer: {jwtSettings["Issuer"]}");
-Console.WriteLine($"Audience: {jwtSettings["Audiance"]}");
+Console.WriteLine($"Audience: {jwtSettings["Audience"]}");
 
 // [Authoriz] Add JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -74,7 +81,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidateAudience = true,
-        ValidAudience = jwtSettings["Audiance"],
+        ValidAudience = jwtSettings["Audience"],
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
@@ -136,7 +143,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200", "http://localhost:11796")
+            policy.WithOrigins("http://localhost:4200", "http://localhost:11796", "http://localhost:9995")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();

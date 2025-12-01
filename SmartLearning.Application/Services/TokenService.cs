@@ -38,7 +38,7 @@ namespace SmartLearning.Application.Services
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:Issuer"],
-                audience: _configuration["JWT:Audiance"],
+                audience: _configuration["JWT:Audience"],
                 claims: claims,
                 expires: expires,
                 signingCredentials: credentials

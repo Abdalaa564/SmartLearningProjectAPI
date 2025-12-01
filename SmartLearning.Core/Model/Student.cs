@@ -21,7 +21,6 @@ namespace SmartLearning.Core.Model
         [Required]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
-        //  public string EnrollmentNumber { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -36,11 +35,14 @@ namespace SmartLearning.Core.Model
         [MaxLength(50)]
         public string? City { get; set; }
 
-        // Foreign key to Identity User
-
+        // ربطه بـ Identity (ينفع تسيبه زى ما هو)
         [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; } = string.Empty;
         public ApplicationUser User { get; set; } = null!;
+
+        // new
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
     }
 }

@@ -38,13 +38,10 @@ namespace SmartLearningProjectAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var created = await _instructorService.CreateAsync(dto);
+            var result = await _instructorService.CreateAsync(dto);
 
-            // يرجّع 201 + Location header للـ GetById
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            return Ok(result);
         }
-
-        // PUT: api/Instructor/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateInstructorDto dto)
         {
@@ -54,10 +51,11 @@ namespace SmartLearningProjectAPI.Controllers
             var success = await _instructorService.UpdateAsync(id, dto);
 
             if (!success)
-                return NotFound();
+                return NotFound("Instructor not found");
 
             return Ok("Instructor updated successfully");
         }
+
 
         // DELETE: api/Instructor/5
         [HttpDelete("{id:int}")]
@@ -69,6 +67,14 @@ namespace SmartLearningProjectAPI.Controllers
                 return NotFound();
 
             return Ok("Instructor deleted successfully");
+        }
+
+        // get count 
+        [HttpGet("count")]
+        public async Task<IActionResult> GetInstructorsCount()
+        {
+            var count = await _instructorService.GetInstructorsCountAsync();
+            return Ok(new { totalInstructors = count });
         }
     }
 }

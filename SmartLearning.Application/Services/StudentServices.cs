@@ -64,6 +64,9 @@ namespace SmartLearning.Application.Services
                 };
             }
 
+            // 👈 هنا ندي اليوزر Role Student
+            await _userManager.AddToRoleAsync(applicationUser, "Student");
+
 
             // await _userManager.AddToRoleAsync(applicationUser, "Student");
 
@@ -113,6 +116,13 @@ namespace SmartLearning.Application.Services
             await _unitOfWork.CompleteAsync();
 
             return _mapper.Map<StudentProfileDto>(student);
+        }
+
+        // count student 
+        public async Task<int> GetStudentsCountAsync()
+        {
+            var students = await _unitOfWork.Repository<Student>().GetAllAsync();
+            return students.Count;
         }
     }
 }

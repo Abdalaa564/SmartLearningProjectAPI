@@ -11,5 +11,13 @@ namespace SmartLearning.Application.DTOs.CourseDto
 
         [Range(0, 99999)]
         public decimal Price { get; set; }
+
+        [Required]
+        public int InstructorId { get; set; }
+
+        [MaxLength(300)]
+        public string? ImageUrl { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
     }
 }
