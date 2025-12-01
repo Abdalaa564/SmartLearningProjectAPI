@@ -23,13 +23,20 @@ namespace SmartLearningProjectAPI.Controllers
         //   "courseId": 5,
         //   "transactionId": "string"
         // }
-        [HttpPost]
-        public async Task<IActionResult> Enroll([FromBody] EnrollmentRequestDto request)
+        [HttpPost("enroll")]
+        [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<EnrollmentResponseDto>> EnrollStudent(
+             [FromBody] EnrollmentRequestDto request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _enrollmentService.EnrollAsync(request);
+            var result = await _enrollmentService.EnrollStudentAsync(request);
+
+            if (!result.Success)
+                return BadRequest(result);
+
             return Ok(result);
         }
 
@@ -65,6 +72,16 @@ namespace SmartLearningProjectAPI.Controllers
                 CourseId = courseId,
                 EnrollmentCount = count
             });
+        }
+        // Get all enrollments for a course (Admin/Instructor)
+        // GET: api/Enrollment/course/{courseId}
+        [HttpGet("course/{courseId}")]
+        //  [Authorize(Roles = "Admin,Instructor")]
+        [ProducesResponseType(typeof(List<EnrollmentDetailsDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<EnrollmentDetailsDto>>> GetCourseEnrollments(int courseId)
+        {
+            var enrollments = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);
+            return Ok(enrollments);
         }
 
         //[HttpDelete("{studentId:int}/{courseId:int}")]

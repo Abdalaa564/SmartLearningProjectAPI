@@ -8,5 +8,9 @@ namespace SmartLearning.Application.Interfaces
 
         Task<StudentProfileDto> UpdateStudentAsync(string userId, StudentUpdateDto updateDto);
 
+        Task<IEnumerable<StudentProfileDto>> GetAllStudentsAsync();
+
+        Task<bool> DeleteStudentAsync(string userId);
+
     }
 }

@@ -41,7 +41,7 @@ builder.Services.AddAutoMapper(typeof(ResourceProfile));
 
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
-
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
 
