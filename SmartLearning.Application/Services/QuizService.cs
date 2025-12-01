@@ -183,7 +183,8 @@ namespace SmartLearning.Application.Services
 					Quiz_Id = answerDto.Quiz_Id,
 					Question_Id = answerDto.Question_Id,
 					Choice_Id = answerDto.Choice_Id,
-					Is_Correct = choice.IsCorrect
+					Is_Correct = choice.IsCorrect,
+					Questions = question
 				};
 
 				await _unitOfWork.Repository<StudentAnswer>().AddAsync(studentAnswer);
