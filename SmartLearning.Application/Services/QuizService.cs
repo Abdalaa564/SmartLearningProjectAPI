@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartLearning.Application.DTOs.QuizDto;
-using SmartLearning.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SmartLearning.Application.Services
 {
-   public class QuizService:IQuizService
-    {
+	public class QuizService : IQuizService
+	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 
@@ -144,58 +143,47 @@ namespace SmartLearning.Application.Services
 
 		public async Task<bool> SubmitAnswerAsync(string userId, SubmitAnswerDto answerDto)
 		{
-			// IDs لازم تكون أرقام منطقية
-			if (answerDto.Quiz_Id <= 0 || answerDto.Question_Id <= 0 || answerDto.Choice_Id <= 0)
-				return false;
-
-			// تأكد إن الكويز موجود
-			var quiz = await _unitOfWork.Repository<Quiz>()
-				.GetByIdAsync(answerDto.Quiz_Id);
-
-			if (quiz == null)
-				return false;
-
-			// تأكد إن السؤال موجود ويتبع نفس الكويز
+			// التحقق من وجود السؤال
 			var question = await _unitOfWork.Repository<Questions>()
 				.GetByIdAsync(answerDto.Question_Id);
 
-			if (question == null || question.Quiz_Id != quiz.Quiz_Id)
+			if (question == null)
 				return false;
 
-			// تأكد إن الاختيار موجود ويتبع نفس السؤال (لو عندك QuestionId في Choice)
+			// التحقق من وجود الاختيار
 			var choice = await _unitOfWork.Repository<Choice>()
 				.GetByIdAsync(answerDto.Choice_Id);
 
-			if (choice == null /* || choice.QuestionId != question.Question_Id */)
+			if (choice == null)
 				return false;
 
+			// التحقق من عدم وجود إجابة سابقة لنفس السؤال
 			var existingAnswers = await _unitOfWork.Repository<StudentAnswer>()
-				.FindAsync(sa =>
+				.FindAsync(predicate: sa =>
 					sa.User_Id == userId &&
 					sa.Quiz_Id == answerDto.Quiz_Id &&
 					sa.Question_Id == answerDto.Question_Id
-
 				);
 
 			var existingAnswer = existingAnswers.FirstOrDefault();
 
 			if (existingAnswer != null)
 			{
+				// تحديث الإجابة
 				existingAnswer.Choice_Id = answerDto.Choice_Id;
 				existingAnswer.Is_Correct = choice.IsCorrect;
-				existingAnswer.Questions = question;
 				_unitOfWork.Repository<StudentAnswer>().Update(existingAnswer);
 			}
 			else
 			{
+				// إضافة إجابة جديدة
 				var studentAnswer = new StudentAnswer
 				{
 					User_Id = userId,
 					Quiz_Id = answerDto.Quiz_Id,
 					Question_Id = answerDto.Question_Id,
 					Choice_Id = answerDto.Choice_Id,
-					Is_Correct = choice.IsCorrect,
-					Questions = question	
+					Is_Correct = choice.IsCorrect
 				};
 
 				await _unitOfWork.Repository<StudentAnswer>().AddAsync(studentAnswer);
@@ -210,7 +198,7 @@ namespace SmartLearning.Application.Services
 			var quizzes = await _unitOfWork.Repository<Quiz>()
 				.FindAsync(
 					predicate: q => q.Quiz_Id == quizId,
-					includeFunc: q => q.Include(x => x.Questions)
+					includeFunc: q => q.Include(x => x.Questions).Include(x => x.Lesson).ThenInclude(c => c.Unit)
 				);
 
 			var quiz = quizzes.FirstOrDefault();
@@ -245,6 +233,35 @@ namespace SmartLearning.Application.Services
 				TotalQuestions = quiz.Questions.Count,
 				Answers = _mapper.Map<List<StudentAnswerResultDto>>(studentAnswers.ToList())
 			};
+
+			var courseId = quiz.Lesson.Unit.Crs_Id;
+			var existingGrade = await _unitOfWork.Repository<Grades>()
+	   .FindAsync(g => g.Std_Id == userId && g.Quize_Id == quizId);
+
+			var grade = existingGrade.FirstOrDefault();
+
+			if (grade == null)
+			{
+				grade = new Grades
+				{
+					Std_Id = userId,
+					Quize_Id = quizId,
+					Course_Id = courseId,
+					Value = (decimal)result.Percentage
+				};
+
+				await _unitOfWork.Repository<Grades>().AddAsync(grade);
+			}
+			else
+			{
+				grade.Value = (decimal)result.Percentage;
+				_unitOfWork.Repository<Grades>().Update(grade);
+			}
+
+			await _unitOfWork.CompleteAsync();
+			// ----------------------
+
+
 
 			return result;
 		}

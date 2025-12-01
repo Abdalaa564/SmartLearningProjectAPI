@@ -4,10 +4,10 @@ using SmartLearning.Application.DTOs.QuizDto;
 
 namespace SmartLearningProjectAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class QuizController : ControllerBase
-    {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class QuizController : ControllerBase
+	{
 		private readonly IQuizService _quizService;
 
 		public QuizController(IQuizService quizService)
@@ -118,27 +118,20 @@ namespace SmartLearningProjectAPI.Controllers
 		//[Authorize(Roles = "Student")]
 		public async Task<IActionResult> SubmitAnswer([FromBody] SubmitAnswerDto answerDto)
 		{
-			try
-			{
-				if (!ModelState.IsValid)
-					return BadRequest(ModelState);
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
 
-				var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-				if (string.IsNullOrEmpty(userId))
-					return Unauthorized();
+			if (string.IsNullOrEmpty(userId))
+				return Unauthorized();
 
-				var result = await _quizService.SubmitAnswerAsync(userId, answerDto);
+			var result = await _quizService.SubmitAnswerAsync(userId, answerDto);
 
-				if (!result)
-					return BadRequest(new { message = "Failed to submit answer" });
+			if (!result)
+				return BadRequest(new { message = "Failed to submit answer" });
 
-				return Ok(new { message = "Answer submitted successfully" });
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { error = ex.Message });
-			}
+			return Ok(new { message = "Answer submitted successfully" });
 		}
 
 		// GET: api/Quiz/result/{quizId}
