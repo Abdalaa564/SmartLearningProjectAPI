@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SmartLearning.Application.Services
 {
-   public class QuizService:IQuizService
-    {
+	public class QuizService : IQuizService
+	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 
@@ -198,7 +198,7 @@ namespace SmartLearning.Application.Services
 			var quizzes = await _unitOfWork.Repository<Quiz>()
 				.FindAsync(
 					predicate: q => q.Quiz_Id == quizId,
-					includeFunc: q => q.Include(x => x.Questions)
+					includeFunc: q => q.Include(x => x.Questions).Include(x => x.Lesson).ThenInclude(c => c.Unit)
 				);
 
 			var quiz = quizzes.FirstOrDefault();
@@ -233,6 +233,35 @@ namespace SmartLearning.Application.Services
 				TotalQuestions = quiz.Questions.Count,
 				Answers = _mapper.Map<List<StudentAnswerResultDto>>(studentAnswers.ToList())
 			};
+
+			var courseId = quiz.Lesson.Unit.Crs_Id;
+			var existingGrade = await _unitOfWork.Repository<Grades>()
+	   .FindAsync(g => g.Std_Id == userId && g.Quize_Id == quizId);
+
+			var grade = existingGrade.FirstOrDefault();
+
+			if (grade == null)
+			{
+				grade = new Grades
+				{
+					Std_Id = userId,
+					Quize_Id = quizId,
+					Course_Id = courseId,
+					Value = (decimal)result.Percentage
+				};
+
+				await _unitOfWork.Repository<Grades>().AddAsync(grade);
+			}
+			else
+			{
+				grade.Value = (decimal)result.Percentage;
+				_unitOfWork.Repository<Grades>().Update(grade);
+			}
+
+			await _unitOfWork.CompleteAsync();
+			// ----------------------
+
+
 
 			return result;
 		}

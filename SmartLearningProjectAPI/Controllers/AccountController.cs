@@ -41,6 +41,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         [HttpPost("login")]
+        
         public async Task<ActionResult<AuthResponseDto>> Login( LoginUserDto loginDto)
         {
             var user = await userManager.FindByNameAsync(loginDto.Email);
