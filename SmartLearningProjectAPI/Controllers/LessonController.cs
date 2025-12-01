@@ -146,12 +146,19 @@ namespace SmartLearningProjectAPI.Controllers
             }
 
             [HttpDelete("{id}")]
-            public async Task<IActionResult> DeleteLesson(int id)
-            {
-                await _lessonService.DeleteLessonAsync(id);
-                return NoContent();
-            }
-            private string? ExtractYoutubeVideoId(string url)
+		public async Task<IActionResult> DeleteLesson(int id)
+		{
+			try
+			{
+				await _lessonService.DeleteLessonAsync(id);
+				return NoContent();
+			}
+			catch (KeyNotFoundException)
+			{
+				return NotFound("Lesson not found");
+			}
+		}
+		private string? ExtractYoutubeVideoId(string url)
             {
                 if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
                     return null;
