@@ -4,10 +4,10 @@ using SmartLearning.Application.DTOs.QuizDto;
 
 namespace SmartLearningProjectAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class QuizController : ControllerBase
-    {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class QuizController : ControllerBase
+	{
 		private readonly IQuizService _quizService;
 
 		public QuizController(IQuizService quizService)

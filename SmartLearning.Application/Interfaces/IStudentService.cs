@@ -12,5 +12,7 @@ namespace SmartLearning.Application.Interfaces
 
         Task<bool> DeleteStudentAsync(string userId);
 
+        Task<int> GetStudentsCountAsync();
+
     }
 }

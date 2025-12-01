@@ -68,5 +68,13 @@ namespace SmartLearningProjectAPI.Controllers
 
             return Ok("Instructor deleted successfully");
         }
+
+        // get count 
+        [HttpGet("count")]
+        public async Task<IActionResult> GetInstructorsCount()
+        {
+            var count = await _instructorService.GetInstructorsCountAsync();
+            return Ok(new { totalInstructors = count });
+        }
     }
 }

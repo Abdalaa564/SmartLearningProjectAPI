@@ -83,6 +83,19 @@ namespace SmartLearningProjectAPI.Controllers
             var enrollments = await _enrollmentService.GetEnrollmentCountForCourseAsync(courseId);
             return Ok(enrollments);
         }
+        // ✅ All students not enrolled in a specific course
+        [HttpGet("course/{courseId:int}/not-enrolled-count")]
+        public async Task<IActionResult> GetNotEnrolledCount(int courseId)
+        {
+            var count = await _enrollmentService.GetNotEnrolledCountForCourseAsync(courseId);
+
+            return Ok(new
+            {
+                CourseId = courseId,
+                NotEnrolledCount = count
+            });
+        }
+    }
 
         //[HttpDelete("{studentId:int}/{courseId:int}")]
         ////   [Authorize]
@@ -154,5 +167,4 @@ namespace SmartLearningProjectAPI.Controllers
 
 
 
-    }
 }

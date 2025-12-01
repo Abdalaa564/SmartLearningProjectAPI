@@ -155,5 +155,14 @@ namespace SmartLearning.Application.Services
             return instructor == null ? null : _mapper.Map<InstructorResponseDto>(instructor);
         }
 
+        //get count of instructors
+        public async Task<int> GetInstructorsCountAsync()
+        {
+            var repo = _unitOfWork.Repository<Instructor>();
+
+            var instructors = await repo.GetAllAsync();
+            return instructors.Count;
+        }
+
     }
 }

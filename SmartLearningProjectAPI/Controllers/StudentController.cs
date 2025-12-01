@@ -66,6 +66,13 @@ namespace SmartLearningProjectAPI.Controllers
             });
         }
 
+        // number of all student 
+        [HttpGet("count")]
+        public async Task<IActionResult> GetStudentsCount()
+        {
+            var count = await _studentService.GetStudentsCountAsync();
+            return Ok(new { totalStudents = count });
+        }
     }
 }
 
