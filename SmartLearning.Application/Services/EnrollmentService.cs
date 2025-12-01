@@ -181,7 +181,7 @@ namespace SmartLearning.Application.Services
                  .FindAsync(
                      e => e.Enroll_Id == enrollId,
                      e => e.Student,
-                     e=> e.Student.User,    
+                     e => e.Student.User,
                     e => e.Course,
                     e => e.Payments
                  );
@@ -222,6 +222,27 @@ namespace SmartLearning.Application.Services
             return $"TXN_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
         }
 
-      
+        public async Task<int> GetNotEnrolledCountForCourseAsync(int courseId)
+        {
+            var studentRepo = _unitOfWork.Repository<Student>();
+            var enrollmentRepo = _unitOfWork.Repository<Enrollment>();
+
+            // All Students
+            var allStudents = await studentRepo.GetAllAsync();
+
+            //all enroll =ments for the course
+            var enrollments = await enrollmentRepo.FindAsync(e => e.Crs_Id == courseId);
+
+            // IDs for all enrolled students
+            var enrolledStudentIds = enrollments
+                .Select(e => e.StudentId)
+                .Distinct()
+                .ToHashSet();
+
+            //Number of students not enrolled in the course
+            var notEnrolledCount = allStudents.Count(s => !enrolledStudentIds.Contains(s.Id));
+
+            return notEnrolledCount;
+        }
     }
 }

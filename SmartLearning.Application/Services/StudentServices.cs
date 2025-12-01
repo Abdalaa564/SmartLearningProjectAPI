@@ -117,5 +117,12 @@ namespace SmartLearning.Application.Services
 
             return _mapper.Map<StudentProfileDto>(student);
         }
+
+        // count student 
+        public async Task<int> GetStudentsCountAsync()
+        {
+            var students = await _unitOfWork.Repository<Student>().GetAllAsync();
+            return students.Count;
+        }
     }
 }

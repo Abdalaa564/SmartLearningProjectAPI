@@ -13,5 +13,7 @@ namespace SmartLearning.Application.Interfaces
 
         Task<IEnumerable<CourseResponseDto>> GetStudentCoursesAsync(int studentId);
         Task<int> GetEnrollmentCountForCourseAsync(int courseId);
+
+        Task<int> GetNotEnrolledCountForCourseAsync(int courseId);
     }
 }
