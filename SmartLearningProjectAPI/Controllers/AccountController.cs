@@ -102,7 +102,7 @@ namespace SmartLearningProjectAPI.Controllers
         [Authorize(Roles = "Instructor")]
         [HttpGet("instructor-profile")]
         public async Task<ActionResult<InstructorResponseDto>> GetMyInstructorProfile(
-    [FromServices] IInstructorService instructorService)
+         [FromServices] IInstructorService instructorService)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -116,7 +116,13 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
 
-
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { message = "Logout successful" });
+        }
 
 
 
