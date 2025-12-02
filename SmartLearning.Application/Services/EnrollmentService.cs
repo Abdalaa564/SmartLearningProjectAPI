@@ -90,41 +90,31 @@ namespace SmartLearning.Application.Services
             }
 
             // 7. Create enrollment
-            var enrollment = new Enrollment
-            {
-                StudentId = request.StudentId,
-                Crs_Id = request.CourseId,
-                Enroll_Date = DateTime.UtcNow,
-                Paid_Amount = request.Payment.Amount
-            };
+            var enrollment = _mapper.Map<Enrollment>(request);
+            enrollment.StudentId = request.StudentId;
+            enrollment.Crs_Id = request.CourseId;
 
-            await _unitOfWork.Repository<Enrollment>().AddAsync(enrollment);
+            await enrollmentRepo.AddAsync(enrollment);
             await _unitOfWork.CompleteAsync();
 
             // 8. Create payment record
-            var payment = new Payment
-            {
-                Enroll_Id = enrollment.Enroll_Id,
-                Amount = request.Payment.Amount,
-                Payment_Method = request.Payment.PaymentMethod,
-                Transaction_Id = transactionId,
-                Payment_Date = DateTime.UtcNow,
-                Status = "Completed",
-                Gateway_Response = paymentResult.GatewayResponse
-            };
+            var payment = _mapper.Map<Payment>(request.Payment);
+             payment.Enroll_Id = enrollment.Enroll_Id;
+             payment.Transaction_Id = transactionId;
+             payment.Status = "Completed";
+             payment.Gateway_Response = paymentResult.GatewayResponse;
 
             await _unitOfWork.Repository<Payment>().AddAsync(payment);
+            await _unitOfWork.CompleteAsync();
+
 
             // 6) نرجع Response
-            return new EnrollmentResponseDto
-            {
-                Success = true,
-                Message = "Enrollment completed successfully",
-                EnrollmentId = enrollment.Enroll_Id,
-                EnrollmentDate = enrollment.Enroll_Date,
-                TransactionId = transactionId,
-                PaidAmount = enrollment.Paid_Amount
-            };
+            var response = _mapper.Map<EnrollmentResponseDto>(enrollment);
+            response.Success = true;
+            response.Message = "Enrollment completed successfully";
+            response.TransactionId = transactionId;
+            return response;
+
         }
 
         // ------------------ UnEnroll Student ------------------
