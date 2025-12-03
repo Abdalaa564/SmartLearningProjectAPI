@@ -15,5 +15,11 @@ namespace SmartLearning.Application.Interfaces
 
         Task<int> GetInstructorsCountAsync();
 
+        // new 
+        Task<InstructorResponseDto> RegisterInstructorAsync(RegisterInstructorDto dto);
+        Task<IEnumerable<InstructorResponseDto>> GetPendingInstructorsAsync();
+        Task<bool> ApproveInstructorAsync(int id);
+        Task<bool> RejectInstructorAsync(int id);
+
     }
 }

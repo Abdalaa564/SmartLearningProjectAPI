@@ -7,7 +7,7 @@ namespace SmartLearningProjectAPI.Middlewares
 
         private static readonly ConcurrentDictionary<string, (DateTime Timestamp, int Count)> _requests = new();
 
-        private readonly int _limit = 5;
+        private readonly int _limit = 50;
         private readonly TimeSpan _window = TimeSpan.FromSeconds(10);
         
         public RateLimitingMiddleware(RequestDelegate next)
