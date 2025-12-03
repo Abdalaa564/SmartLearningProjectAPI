@@ -2,8 +2,8 @@
 {
     public class InstructorResponseDto
     {
-        public int Id { get; set; }              
-        public string UserId { get; set; } = string.Empty;  
+        public int Id { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         public string FullName { get; set; } = string.Empty;
         public string? JobTitle { get; set; }
@@ -12,10 +12,17 @@
         public string? PhoneNumber { get; set; }
         public string? YoutubeChannelUrl { get; set; }
 
-        
         public string? Email { get; set; }
 
         public string? PhotoUrl { get; set; }
         public string? CertificateUrl { get; set; }
+
+        // NEW
+        public string? CvUrl { get; set; }
+        public string? Specialization { get; set; }
+        public string? UniversityName { get; set; }
+        public string? About { get; set; }
+
+        public InstructorStatus Status { get; set; }
     }
 }
