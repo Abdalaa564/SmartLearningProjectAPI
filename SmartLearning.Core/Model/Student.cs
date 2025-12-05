@@ -44,5 +44,6 @@ namespace SmartLearning.Core.Model
         // new
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
         public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+        //public ICollection<Grades> Grades { get; set; } = new List<Grades>();
     }
 }

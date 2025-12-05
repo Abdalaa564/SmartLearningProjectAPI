@@ -9,10 +9,11 @@ namespace SmartLearningProjectAPI.Controllers
 	public class QuizController : ControllerBase
 	{
 		private readonly IQuizService _quizService;
-
-		public QuizController(IQuizService quizService)
+        private readonly IStudentService _studentService;
+        public QuizController(IQuizService quizService, IStudentService studentService)
 		{
 			_quizService = quizService;
+			_studentService = studentService;
 		}
 
 		// GET: api/Quiz/{id}
