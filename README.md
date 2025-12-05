@@ -270,7 +270,6 @@ Authorization: Bearer {your-jwt-token}
 - **Instructor** - Manage courses and content
 - **Student** - Access courses and content
 
-```
 
 ## 📊 Logging and Monitoring
 
@@ -355,7 +354,7 @@ This project is licensed under the [MIT License](LICENSE).
 ## 📞 Contact
 
 For questions and inquiries, please contact:
-- Email: support@smartlearning.com
+- Email: abdalaakhaleel564@gmail.com
 - GitHub Issues: [Project Issues](https://github.com/your-repo/issues)
 
 ## 👥 Team Members
