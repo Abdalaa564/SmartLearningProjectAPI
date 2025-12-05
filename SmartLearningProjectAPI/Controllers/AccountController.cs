@@ -1,4 +1,6 @@
 ﻿
+using SmartLearning.Core.Enums;
+
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -14,9 +16,11 @@ namespace SmartLearningProjectAPI.Controllers
 
         public AccountController(
             IInstructorService instructorService,
-            UserManager<ApplicationUser> userManager, 
-            IConfiguration config, IStudentService studentService,
-            SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
+            UserManager<ApplicationUser> userManager,
+            IConfiguration config,
+            IStudentService studentService,
+            SignInManager<ApplicationUser> signInManager,
+            ITokenService tokenService)
         {
             this.userManager = userManager;
             this.config = config;
@@ -26,8 +30,9 @@ namespace SmartLearningProjectAPI.Controllers
             _instructorService = instructorService;
         }
 
+        // REGISTER STUDENT
         [HttpPost("register")]
-        public async Task<ActionResult<AuthResponseDto>> Register( RegisterStudentDto registerDto)
+        public async Task<ActionResult<AuthResponseDto>> Register(RegisterStudentDto registerDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -37,12 +42,40 @@ namespace SmartLearningProjectAPI.Controllers
             if (!result.Success)
                 return BadRequest(result);
 
-            return CreatedAtAction(nameof(GetMyProfile),  result);
+            return CreatedAtAction(nameof(GetMyProfile), result);
         }
 
+        // REGISTER INSTRUCTOR
+        [HttpPost("register-instructor")]
+        public async Task<ActionResult> RegisterInstructor([FromBody] RegisterInstructorDto registerDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var instructor = await _instructorService.RegisterInstructorAsync(registerDto);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Registration successful. Your account is pending admin approval.",
+                    data = instructor
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        // LOGIN
         [HttpPost("login")]
-        
-        public async Task<ActionResult<AuthResponseDto>> Login( LoginUserDto loginDto)
+        public async Task<ActionResult<AuthResponseDto>> Login(LoginUserDto loginDto)
         {
             var user = await userManager.FindByNameAsync(loginDto.Email);
             if (user == null)
@@ -54,33 +87,43 @@ namespace SmartLearningProjectAPI.Controllers
                 return Unauthorized(new { message = "Invalid credentials" });
 
             var roles = await userManager.GetRolesAsync(user);
-            // 4) لو Student → هات StudentProfile
-            StudentProfileDto? profile = null;
+
+            StudentProfileDto? studentProfile = null;
+            InstructorResponseDto? instructorProfile = null;
+            object? data = null;
 
             if (roles.Contains("Student"))
             {
-                profile = await _studentService.GetStudentProfileAsync(user.Id);
+                studentProfile = await _studentService.GetStudentProfileAsync(user.Id);
+                data = studentProfile;
             }
-            InstructorResponseDto? instructorProfile = null;
 
             if (roles.Contains("Instructor"))
             {
                 instructorProfile = await _instructorService.GetByUserIdProfilrAsync(user.Id);
+                if (instructorProfile == null)
+                {
+                    return Unauthorized(new { message = "Instructor profile not found" });
+                }
+
+                if (instructorProfile.Status != InstructorStatus.Approved)
+                {
+                    return Unauthorized(new { message = "Your instructor account is not approved yet. Please wait for admin approval." });
+                }
+
+                data = instructorProfile;
             }
 
             var token = await _tokenService.GenerateTokenAsync(user);
 
-            // 6) نرجّع الرد
             return Ok(new AuthResponseDto
             {
                 Success = true,
                 Message = "Login successful",
-                Data = profile,   // للـ Instructor هتبقى null عادي
+                Data = data,
                 Token = token
             });
         }
-           
-        
 
         [Authorize]
         [HttpGet("profile")]
@@ -91,18 +134,17 @@ namespace SmartLearningProjectAPI.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-           
-                var profile = await _studentService.GetStudentProfileAsync(userId);
+            var profile = await _studentService.GetStudentProfileAsync(userId);
             if (profile == null)
                 return NotFound(new { message = "Student profile not found for this user" });
+
             return Ok(profile);
-           
-           
         }
+
         [Authorize(Roles = "Instructor")]
         [HttpGet("instructor-profile")]
         public async Task<ActionResult<InstructorResponseDto>> GetMyInstructorProfile(
-         [FromServices] IInstructorService instructorService)
+            [FromServices] IInstructorService instructorService)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -114,6 +156,8 @@ namespace SmartLearningProjectAPI.Controllers
 
             return Ok(instructor);
         }
+    }
+}
 
 
         [HttpPost("logout")]
@@ -199,5 +243,5 @@ namespace SmartLearningProjectAPI.Controllers
         //    }
         //    return Unauthorized();
         //}
-    }
-}
+    
+
