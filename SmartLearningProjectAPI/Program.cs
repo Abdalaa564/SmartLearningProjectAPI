@@ -40,6 +40,7 @@ builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddAutoMapper(typeof(ResourceProfile));
+builder.Services.AddAutoMapper(typeof(PaymentProfile));
 
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();

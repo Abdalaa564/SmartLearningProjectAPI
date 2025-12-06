@@ -156,9 +156,6 @@ namespace SmartLearningProjectAPI.Controllers
 
             return Ok(instructor);
         }
-    }
-}
-
 
         [HttpPost("logout")]
         [Authorize]
@@ -167,6 +164,10 @@ namespace SmartLearningProjectAPI.Controllers
             await _signInManager.SignOutAsync();
             return Ok(new { message = "Logout successful" });
         }
+    }
+
+}
+        
 
 
 
