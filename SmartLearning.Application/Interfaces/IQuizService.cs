@@ -10,7 +10,7 @@ namespace SmartLearning.Application.Interfaces
    public interface IQuizService
     {
 		Task<QuizDetailsDto?> GetQuizByIdAsync(int quizId);
-		Task<StartQuizDto?> StartQuizAsync(int quizId);
+		Task<StartQuizDto?> StartQuizAsync(int quizId,string userId);
 		Task<QuizDetailsDto> CreateQuizAsync(CreateQuizDto quizDto);
 		Task<bool> UpdateQuizAsync(UpdateQuizDto quizDto);
 		Task<bool> DeleteQuizAsync(int quizId);
@@ -19,5 +19,6 @@ namespace SmartLearning.Application.Interfaces
 		Task<bool> SubmitAnswerAsync(string userId, SubmitAnswerDto answerDto);
 		Task<QuizResultDto?> GetQuizResultAsync(string userId, int quizId);
 		Task<List<QuizDetailsDto>> GetQuizzesByLessonIdAsync(int lessonId);
+		Task<List<StudentGradeDto>> GetStudentGradesAsync(string userId);
 	}
 }
