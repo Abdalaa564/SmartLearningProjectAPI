@@ -421,8 +421,7 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-<<<<<<< HEAD
-=======
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -438,7 +437,6 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
->>>>>>> origin/master
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -514,7 +512,7 @@ namespace SmartLearning.Infrastructure.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-<<<<<<< HEAD
+
 
                     b.Property<int>("Enroll_Id")
                         .HasColumnType("int");
@@ -522,7 +520,7 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Property<string>("Gateway_Response")
                         .HasColumnType("NVARCHAR(MAX)");
 
-=======
+
 
                     b.Property<int>("Enroll_Id")
                         .HasColumnType("int");
@@ -531,7 +529,7 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
->>>>>>> origin/master
+
                     b.Property<DateTime>("Payment_Date")
                         .HasColumnType("datetime2");
 

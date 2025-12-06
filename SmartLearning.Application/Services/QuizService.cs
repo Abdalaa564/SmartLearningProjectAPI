@@ -287,5 +287,17 @@ namespace SmartLearning.Application.Services
 
 			return _mapper.Map<List<QuizDetailsDto>>(quizzes.ToList());
 		}
+
+		public async Task<List<StudentGradeDto>> GetStudentGradesAsync(string userId)
+		{
+			var grades = await _unitOfWork.Repository<Grades>()
+				.FindAsync(
+					g => g.Std_Id == userId,
+					includeFunc: q => q
+						.Include(x => x.Quiz)
+						.Include(x => x.Course)
+				);
+			return _mapper.Map<List<StudentGradeDto>>(grades);
+		}
 	}
 }

@@ -19,5 +19,6 @@ namespace SmartLearning.Application.Interfaces
 		Task<bool> SubmitAnswerAsync(string userId, SubmitAnswerDto answerDto);
 		Task<QuizResultDto?> GetQuizResultAsync(string userId, int quizId);
 		Task<List<QuizDetailsDto>> GetQuizzesByLessonIdAsync(int lessonId);
+		Task<List<StudentGradeDto>> GetStudentGradesAsync(string userId);
 	}
 }

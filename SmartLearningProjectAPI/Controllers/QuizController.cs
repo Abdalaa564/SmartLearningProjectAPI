@@ -157,5 +157,18 @@ namespace SmartLearningProjectAPI.Controllers
 
 			return Ok(result);
 		}
+		[HttpGet("StudentGrades")]
+		[Authorize]
+
+		public async Task<IActionResult> GetStudentGrades()
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (string.IsNullOrEmpty(userId))
+				return Unauthorized();
+
+			var result = await _quizService.GetStudentGradesAsync(userId);
+			return Ok(result);
+		}
 	}
 }
