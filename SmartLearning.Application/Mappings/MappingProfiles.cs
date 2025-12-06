@@ -49,7 +49,7 @@ namespace SmartLearning.Application.Mappings
 				.ForMember(dest => dest.Grade_Point,
 					opt => opt.MapFrom(src => src.Questions.Grade_Point))
 				.ForMember(dest => dest.CorrectAnswer,
-					opt => opt.MapFrom(src => src.Questions.CorrectAnswer));
+					opt => opt.MapFrom(src => src.Questions.Choices.FirstOrDefault(c => c.IsCorrect).ChoiceText));
 		}
 	}
 }

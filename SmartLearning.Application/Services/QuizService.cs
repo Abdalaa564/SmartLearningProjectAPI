@@ -38,7 +38,7 @@ namespace SmartLearning.Application.Services
 			return _mapper.Map<QuizDetailsDto>(quiz);
 		}
 
-		public async Task<StartQuizDto?> StartQuizAsync(int quizId)
+		public async Task<StartQuizDto?> StartQuizAsync(int quizId, string userId)
 		{
 			var quizzes = await _unitOfWork.Repository<Quiz>()
 				.FindAsync(
@@ -48,9 +48,15 @@ namespace SmartLearning.Application.Services
 							.ThenInclude(qu => qu.Choices)
 				);
 
+
 			var quiz = quizzes.FirstOrDefault();
 
 			if (quiz == null)
+				return null;
+			var existingAnswers = await _unitOfWork.Repository<StudentAnswer>()
+			.FindAsync(sa => sa.User_Id == userId && sa.Quiz_Id == quizId);
+
+			if (existingAnswers.Any())
 				return null;
 
 			return _mapper.Map<StartQuizDto>(quiz);
@@ -209,11 +215,12 @@ namespace SmartLearning.Application.Services
 
 			var studentAnswers = await _unitOfWork.Repository<StudentAnswer>()
 				.FindAsync(
-					predicate: sa => sa.User_Id == userId && sa.Quiz_Id == quizId,
-					includeFunc: sa => sa
-						.Include(x => x.Questions)
-						.Include(x => x.Choice)
-				);
+						sa => sa.User_Id == userId && sa.Quiz_Id == quizId,
+						includeFunc: sa => sa
+							.Include(x => x.Questions)
+								.ThenInclude(q => q.Choices) 
+							.Include(x => x.Choice) 
+					);
 
 			if (!studentAnswers.Any())
 				return null;
