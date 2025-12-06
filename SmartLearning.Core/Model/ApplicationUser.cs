@@ -7,6 +7,6 @@ namespace SmartLearning.Core.Model
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public ICollection<Grades> Grades { get; set; } = new List<Grades>();
 
-     
+
     }
 }
