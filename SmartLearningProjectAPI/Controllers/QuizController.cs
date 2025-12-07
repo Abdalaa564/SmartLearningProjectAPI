@@ -170,5 +170,17 @@ namespace SmartLearningProjectAPI.Controllers
 			var result = await _quizService.GetStudentGradesAsync(userId);
 			return Ok(result);
 		}
+		// GET: api/Quiz/all
+		[HttpGet("all")]
+		[Authorize]
+		public async Task<IActionResult> GetAllQuizzes()
+		{
+			var quizzes = await _quizService.GetAllQuizzesAsync();
+
+			if (quizzes == null || !quizzes.Any())
+				return NotFound(new { message = "No quizzes found." });
+
+			return Ok(quizzes);
+		}
 	}
 }
