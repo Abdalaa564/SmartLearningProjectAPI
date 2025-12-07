@@ -267,13 +267,9 @@ namespace SmartLearning.Application.Services
 			}
 
 			await _unitOfWork.CompleteAsync();
-			// ----------------------
-
-
 
 			return result;
 		}
-
 		public async Task<List<QuizDetailsDto>> GetQuizzesByLessonIdAsync(int lessonId)
 		{
 			var quizzes = await _unitOfWork.Repository<Quiz>()
@@ -299,5 +295,19 @@ namespace SmartLearning.Application.Services
 				);
 			return _mapper.Map<List<StudentGradeDto>>(grades);
 		}
+
+		public async Task<List<QuizDetailsDto>> GetAllQuizzesAsync()
+		{
+			
+			var quizzes = await _unitOfWork.Repository<Quiz>()
+				.GetAllAsync(q => q
+					.Include(x => x.Lesson)
+					.Include(x => x.Questions)
+						.ThenInclude(qu => qu.Choices)
+				);
+
+			return _mapper.Map<List<QuizDetailsDto>>(quizzes.ToList());
+		}
+
 	}
 }
