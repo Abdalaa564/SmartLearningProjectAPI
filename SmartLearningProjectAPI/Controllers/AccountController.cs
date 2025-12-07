@@ -41,7 +41,6 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         [HttpPost("login")]
-        
         public async Task<ActionResult<AuthResponseDto>> Login( LoginUserDto loginDto)
         {
             var user = await userManager.FindByNameAsync(loginDto.Email);
@@ -99,6 +98,7 @@ namespace SmartLearningProjectAPI.Controllers
            
            
         }
+
         [Authorize(Roles = "Instructor")]
         [HttpGet("instructor-profile")]
         public async Task<ActionResult<InstructorResponseDto>> GetMyInstructorProfile(

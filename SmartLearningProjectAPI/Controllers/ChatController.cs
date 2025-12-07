@@ -14,6 +14,7 @@ namespace SmartLearningProjectAPI.Controllers
             _pdfChatService = pdfChatService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Ask([FromBody] ChatRequest request)
         {
@@ -21,6 +22,7 @@ namespace SmartLearningProjectAPI.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpPost("upload-pdf")]
         public async Task<IActionResult> UploadPdf(IFormFile file)
         {

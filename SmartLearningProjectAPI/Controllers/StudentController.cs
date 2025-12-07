@@ -24,6 +24,7 @@ namespace SmartLearningProjectAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpPut("profile")]
         public async Task<ActionResult<StudentProfileDto>> UpdateProfile(StudentUpdateDto updateDto)
         {
@@ -37,9 +38,9 @@ namespace SmartLearningProjectAPI.Controllers
 
         }
 
+        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Instructor")]
         [HttpDelete("{userId}")]
-       // [Authorize(Roles = "Admin")]
-
         public async Task<ActionResult> DeleteStudent(string userId)
         {
             if (string.IsNullOrEmpty(userId))

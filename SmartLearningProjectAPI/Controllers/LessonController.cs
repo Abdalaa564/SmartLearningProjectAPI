@@ -24,6 +24,7 @@ namespace SmartLearningProjectAPI.Controllers
             // 1) إنشاء درس + PDF (إجباري) + YouTube (اختياري)
             // POST: api/Lesson/create
             // ============================================================
+            [Authorize(Roles = "Instructor")]
             [HttpPost("create")]
             [Consumes("multipart/form-data")]
             public async Task<IActionResult> CreateLessonWithResources(
@@ -131,6 +132,7 @@ namespace SmartLearningProjectAPI.Controllers
                 return Ok(lessons);
             }
 
+            [Authorize(Roles = "Instructor")]
             [HttpPut("{id}")]
             public async Task<IActionResult> UpdateLesson(int id, [FromBody] UpdateLessonDto dto)
             {
@@ -145,7 +147,8 @@ namespace SmartLearningProjectAPI.Controllers
                 }
             }
 
-            [HttpDelete("{id}")]
+        [Authorize(Roles = "Instructor")]
+        [HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteLesson(int id)
 		{
 			try
