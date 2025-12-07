@@ -1,4 +1,6 @@
 
+using SmartLearning.Application.Services.Paymentservices;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ITIEntity>(options =>
@@ -38,11 +40,14 @@ builder.Services.AddScoped<ILessonService, LessonsService>();
 builder.Services.AddAutoMapper(typeof(LessonsProfile));
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddAutoMapper(typeof(ResourceProfile));
+builder.Services.AddAutoMapper(typeof(PaymentProfile));
 
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-
+var paymobSettings = new PaymobSettings();
+builder.Configuration.GetSection("Paymob").Bind(paymobSettings);
+builder.Services.AddSingleton(paymobSettings);
 
 
 //---- External Services

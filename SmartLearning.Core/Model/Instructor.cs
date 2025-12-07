@@ -36,6 +36,21 @@ namespace SmartLearning.Core.Model
 
         [MaxLength(300)]
         public string? CertificateUrl { get; set; }
+        [MaxLength(300)]
+        public string? CvUrl { get; set; }          
+
+        [MaxLength(200)]
+        public string? Specialization { get; set; } 
+
+        [MaxLength(200)]
+        public string? UniversityName { get; set; }
+
+        [MaxLength(1000)]
+        public string? About { get; set; }          
+
+        // 🆕 STATUS علشان approval من الـ Admin
+        public InstructorStatus Status { get; set; } = InstructorStatus.Pending;
+
 
         public ICollection<Course> Courses { get; set; } = new List<Course>();
 

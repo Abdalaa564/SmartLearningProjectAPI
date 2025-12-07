@@ -24,13 +24,14 @@ namespace SmartLearningProjectAPI.Controllers
         //   "transactionId": "string"
         // }
         [HttpPost("enroll")]
-        [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EnrollmentInitiationResponseDto), StatusCodes.Status200OK)]
+
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<EnrollmentResponseDto>> EnrollStudent(
+        public async Task<ActionResult<EnrollmentInitiationResponseDto>> EnrollStudent(
              [FromBody] EnrollmentRequestDto request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
 
             var result = await _enrollmentService.EnrollStudentAsync(request);
 
@@ -39,6 +40,63 @@ namespace SmartLearningProjectAPI.Controllers
 
             return Ok(result);
         }
+        [HttpGet("paymob-callback")]
+
+        [HttpPost("paymob-callback")]
+        public async Task<IActionResult> PaymobCallback()
+        {
+            var callbackData = new Dictionary<string, string>();
+            // Try query parameters first (GET request)
+            if (Request.Query.Any())
+            {
+                foreach (var kvp in Request.Query)
+                {
+                    callbackData[kvp.Key] = kvp.Value.ToString();
+                }
+            }
+            // Try form data (POST request)
+            else if (Request.HasFormContentType && Request.Form.Any())
+            {
+                foreach (var kvp in Request.Form)
+                {
+                    callbackData[kvp.Key] = kvp.Value.ToString();
+                }
+            }
+
+            // Process the payment callback
+            var result = await _enrollmentService.CompleteEnrollmentFromCallbackAsync(callbackData);
+
+            // Redirect to Angular frontend with result
+            var frontendUrl = "http://localhost:4200/Courses"; // Update with your Angular URL
+
+            if (!result.Success)
+            {
+                return Redirect($"{frontendUrl}?success=false&message={Uri.EscapeDataString(result.Message)}");
+            }
+
+            return Redirect($"{frontendUrl}?success=true&transactionId={result.TransactionId}&enrollmentId={result.EnrollmentId}");
+        }
+        [HttpPost("paymob-webhook")]
+        public async Task<IActionResult> PaymobWebhook([FromForm] Dictionary<string, string> webhookData)
+        { 
+            
+                var result = await _enrollmentService.CompleteEnrollmentFromCallbackAsync(webhookData);
+
+                // Paymob expects 200 OK response
+                return Ok(new { received = true });
+           
+        }
+
+
+        [HttpGet("paymob-status/{transactionId}")]
+        public async Task<IActionResult> GetEnrollmentStatus(string transactionId)
+        {
+            var status = await _enrollmentService.GetEnrollmentStatusAsync(transactionId);
+            return Ok(status);
+        }
+
+
+
 
         // DELETE: api/Enrollment/{studentId}/{courseId}
         [HttpDelete("{studentId:int}/{courseId:int}")]
@@ -96,73 +154,6 @@ namespace SmartLearningProjectAPI.Controllers
             });
         }
     }
-
-        //[HttpDelete("{studentId:int}/{courseId:int}")]
-        ////   [Authorize]
-        //public async Task<IActionResult> UnEnroll(int studentId, int courseId)
-        //{
-        //    var success = await _enrollmentService.UnenrollAsync(studentId, courseId);
-
-        //    if (!success)
-        //        return NotFound(new { success = false, message = "Enrollment not found for this student/course" });
-
-        //    return Ok(new { success = true, message = "Unenrolled successfully" });
-        //}
-
-
-        ////Check if current student is enrolled in a course
-        //// GET: api/Enrollment/check/{courseId}
-        //[HttpGet("check/{courseId}")]
-        //[Authorize]
-        //[ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        //public async Task<ActionResult<bool>> CheckEnrollment(int courseId)
-        //{
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(userId))
-        //        return Unauthorized();
-
-        //    if (!int.TryParse(userId, out int studentId))
-        //        return BadRequest("Invalid user ID format.");
-
-        //    var isEnrolled = await _enrollmentService.IsStudentEnrolledAsync(studentId, courseId);
-        //    return Ok(isEnrolled);
-        //}
-
-
-        // Get all courses for current student
-        // GET: api/Enrollment/student/my-courses
-        // [HttpGet("student/my-courses")]
-        //// [Authorize]
-        // [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-        // public async Task<IActionResult> GetMyCourses()
-        // {
-        //     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //     if (string.IsNullOrEmpty(userId))
-        //         return Unauthorized();
-
-        //     var studentId = userId; // Assuming studentId == userId
-        //     var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-        //     return Ok(courses);
-        // }
-
-
-
-        // Get courses for specific student (Admin/Instructor)
-        // GET: api/Enrollment/student/{studentId}/courses
-        //   [HttpGet("student/{studentId}/courses")]
-        ////   [Authorize(Roles = "Admin,Instructor")]
-        //   [ProducesResponseType(typeof(IEnumerable<CourseResponseDto>), StatusCodes.Status200OK)]
-        //   public async Task<IActionResult> GetStudentCourses(int studentId)
-        //   {
-        //       var courses = await _enrollmentService.GetStudentCoursesAsync(studentId);
-        //       return Ok(courses);
-        //   }
-
-
-
-
-        // Unenroll from a course    
-        // DELETE: api/Enrollment/{studentId}/{courseId}
 
 
 

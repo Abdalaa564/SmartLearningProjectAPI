@@ -9,10 +9,11 @@ namespace SmartLearningProjectAPI.Controllers
 	public class QuizController : ControllerBase
 	{
 		private readonly IQuizService _quizService;
-
-		public QuizController(IQuizService quizService)
+        private readonly IStudentService _studentService;
+        public QuizController(IQuizService quizService, IStudentService studentService)
 		{
 			_quizService = quizService;
+			_studentService = studentService;
 		}
 
 		// GET: api/Quiz/{id}
@@ -39,12 +40,17 @@ namespace SmartLearningProjectAPI.Controllers
 		[HttpPost("start/{quizId}")]
 		public async Task<IActionResult> StartQuiz(int quizId)
 		{
-			var quiz = await _quizService.StartQuizAsync(quizId);
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (string.IsNullOrEmpty(userId))
+				return Unauthorized();
+
+			var quiz = await _quizService.StartQuizAsync(quizId, userId);
 
 			if (quiz == null)
-				return NotFound(new { message = "Quiz not found" });
+				return BadRequest(new { message = "You have already taken this quiz or quiz not found." });
 
 			return Ok(quiz);
+
 		}
 
 		// POST: api/Quiz
@@ -149,6 +155,19 @@ namespace SmartLearningProjectAPI.Controllers
 			if (result == null)
 				return NotFound(new { message = "Quiz not found or no answers submitted" });
 
+			return Ok(result);
+		}
+		[HttpGet("StudentGrades")]
+		[Authorize]
+
+		public async Task<IActionResult> GetStudentGrades()
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (string.IsNullOrEmpty(userId))
+				return Unauthorized();
+
+			var result = await _quizService.GetStudentGradesAsync(userId);
 			return Ok(result);
 		}
 	}

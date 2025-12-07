@@ -164,5 +164,97 @@ namespace SmartLearning.Application.Services
             return instructors.Count;
         }
 
+        // Register Instructor
+        public async Task<InstructorResponseDto> RegisterInstructorAsync(RegisterInstructorDto dto)
+        {
+            // 1) check email exists
+            var existingUser = await _userManager.FindByEmailAsync(dto.Email);
+            if (existingUser != null)
+                throw new Exception("Email already used by another account");
+
+            // 2) create ApplicationUser
+            var user = new ApplicationUser
+            {
+                UserName = dto.Email,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber
+            };
+
+            var createUserResult = await _userManager.CreateAsync(user, dto.Password);
+            if (!createUserResult.Succeeded)
+                throw new Exception(string.Join("; ", createUserResult.Errors.Select(e => e.Description)));
+
+            // 3) add role "Instructor"
+            await _userManager.AddToRoleAsync(user, "Instructor");
+
+            // 4) create Instructor as Pending
+            var repo = _unitOfWork.Repository<Instructor>();
+            var instructor = new Instructor
+            {
+                UserId = user.Id,
+                FullName = dto.FullName,
+                JobTitle = dto.JobTitle,
+                PhoneNumber = dto.PhoneNumber,
+                YoutubeChannelUrl = dto.YoutubeChannelUrl,
+                PhotoUrl = dto.PhotoUrl,
+                CertificateUrl = dto.CertificateUrl,
+
+                CvUrl = dto.CvUrl,
+                Specialization = dto.Specialization,
+                UniversityName = dto.UniversityName,
+                About = dto.About,
+
+                Rating = null,
+                Status = InstructorStatus.Pending
+            };
+
+            await repo.AddAsync(instructor);
+            await _unitOfWork.CompleteAsync();
+
+            var loaded = await repo.FindAsync(i => i.Id == instructor.Id,
+                q => q.Include(i => i.User));
+
+            return _mapper.Map<InstructorResponseDto>(loaded.First());
+        }
+        // Get all pending instructors
+        public async Task<IEnumerable<InstructorResponseDto>> GetPendingInstructorsAsync()
+        {
+            var repo = _unitOfWork.Repository<Instructor>();
+            var instructors = await repo.FindAsync(
+                i => i.Status == InstructorStatus.Pending,
+                q => q.Include(i => i.User)
+            );
+
+            return _mapper.Map<IEnumerable<InstructorResponseDto>>(instructors);
+        }
+        // Approve instructor
+        public async Task<bool> ApproveInstructorAsync(int id)
+        {
+            var repo = _unitOfWork.Repository<Instructor>();
+            var instructors = await repo.FindAsync(i => i.Id == id, q => q.Include(i => i.User));
+            var instructor = instructors.FirstOrDefault();
+            if (instructor == null) return false;
+
+            instructor.Status = InstructorStatus.Approved;
+
+            repo.Update(instructor);
+            await _unitOfWork.CompleteAsync();
+            return true;
+        }
+        // reject instructor
+        public async Task<bool> RejectInstructorAsync(int id)
+        {
+            var repo = _unitOfWork.Repository<Instructor>();
+            var instructors = await repo.FindAsync(i => i.Id == id);
+            var instructor = instructors.FirstOrDefault();
+            if (instructor == null) return false;
+
+            instructor.Status = InstructorStatus.Rejected;
+
+            repo.Update(instructor);
+            await _unitOfWork.CompleteAsync();
+            return true;
+        }
+
     }
 }

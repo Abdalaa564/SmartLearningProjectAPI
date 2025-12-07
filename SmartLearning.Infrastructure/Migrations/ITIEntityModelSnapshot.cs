@@ -382,7 +382,15 @@ namespace SmartLearning.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("About")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<string>("CertificateUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("CvUrl")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -390,6 +398,51 @@ namespace SmartLearning.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("JobTitle")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("NumberOfStudents")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UniversityName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("YoutubeChannelUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Instructors");
+                });
 
                     b.Property<string>("JobTitle")
                         .HasMaxLength(100)
@@ -453,7 +506,21 @@ namespace SmartLearning.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Meeting", b =>
-                {
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Payment_Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+
+                    b.Property<int>("Enroll_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Gateway_Response")
+                        .HasColumnType("NVARCHAR(MAX)");
+
+
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
@@ -462,7 +529,16 @@ namespace SmartLearning.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
+
+                    b.Property<DateTime>("Payment_Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payment_Method")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -486,12 +562,7 @@ namespace SmartLearning.Infrastructure.Migrations
                 {
                     b.Property<int>("Payment_Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Payment_Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Enroll_Id")
                         .HasColumnType("int");
@@ -500,15 +571,7 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<DateTime>("Payment_Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Payment_Method")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Status")
+                    b.Property<string>("JoinLink")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");

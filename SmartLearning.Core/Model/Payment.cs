@@ -30,7 +30,7 @@ namespace SmartLearning.Core.Model
         [MaxLength(20)]
         public string Status { get; set; } = "Pending";
 
-        [MaxLength(1000)]
+        [Column(TypeName = "NVARCHAR(MAX)")]
         public string? Gateway_Response { get; set; }
 
         // Navigation property
