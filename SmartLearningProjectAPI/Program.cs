@@ -49,6 +49,7 @@ var paymobSettings = new PaymobSettings();
 builder.Configuration.GetSection("Paymob").Bind(paymobSettings);
 builder.Services.AddSingleton(paymobSettings);
 
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 //---- External Services
 builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();

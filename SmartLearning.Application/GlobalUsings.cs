@@ -20,8 +20,8 @@ global using SmartLearning.Application.DTOs.LessonDto;
 global using SmartLearning.Application.DTOs.Instructors;
 global using SmartLearning.Application.DTOs.MeetingDto;
 global using SmartLearning.Application.DTOs.InstructorDto;
-global using SmartLearning.Application.DTOs.Instructors;
 global using SmartLearning.Application.DTOs.Resource;
+global using SmartLearning.Application.DTOs.AdminDto;
 global using Microsoft.AspNetCore.Http;
 global using SmartLearning.Core.Enums;
 
