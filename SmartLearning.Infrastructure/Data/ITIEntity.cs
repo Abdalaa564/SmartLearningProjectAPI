@@ -23,7 +23,7 @@ namespace SmartLearning.Infrastructure.Data
         public DbSet<Meeting> Meetings { get; set; }
 
         public DbSet<Payment> Payments { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
@@ -206,7 +206,26 @@ namespace SmartLearning.Infrastructure.Data
                 .WithMany(s => s.Attendances)
                 .HasForeignKey(a => a.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
-        }
+
+			modelBuilder.Entity<CourseRating>()
+	  .HasKey(cr => cr.Id);
+
+			modelBuilder.Entity<CourseRating>()
+				.HasOne(cr => cr.Course)
+				.WithMany(c => c.CourseRatings)
+				.HasForeignKey(cr => cr.CourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<InstructorRating>()
+				.HasKey(ir => ir.Id);
+
+			modelBuilder.Entity<InstructorRating>()
+				.HasOne(ir => ir.Instructor)
+				.WithMany(i => i.InstructorRatings)
+				.HasForeignKey(ir => ir.InstructorId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+		}
 
     }
 }

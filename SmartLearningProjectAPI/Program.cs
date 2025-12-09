@@ -44,6 +44,8 @@ builder.Services.AddAutoMapper(typeof(PaymentProfile));
 
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<ICourseRatingService, CourseRatingService>();
+builder.Services.AddScoped<IInstructorRatingService, InstructorRatingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 var paymobSettings = new PaymobSettings();
 builder.Configuration.GetSection("Paymob").Bind(paymobSettings);
