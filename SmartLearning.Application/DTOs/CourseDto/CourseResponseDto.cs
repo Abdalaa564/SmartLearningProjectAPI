@@ -12,5 +12,7 @@ namespace SmartLearning.Application.DTOs.CourseDto
         public string? ImageUrl { get; set; }
         public string? InstructorPhoto { get; set; }
 
+        public List<CourseStudentDto> EnrolledStudents { get; set; } = new();
+
     }
 }

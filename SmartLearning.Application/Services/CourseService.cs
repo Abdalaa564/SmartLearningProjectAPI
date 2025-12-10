@@ -26,9 +26,15 @@ namespace SmartLearning.Application.Services
         public async Task<CourseResponseDto?> GetByIdAsync(int id)
         {
             var result = await _unitOfWork.Repository<Course>()
-                .FindAsync(c => c.Crs_Id == id,
-                           c => c.Instructor,
-                           c => c.Instructor.User);
+                .GetAllAsync(query =>
+                    query
+                        .Where(c => c.Crs_Id == id)
+                        .Include(c => c.Instructor)
+                            .ThenInclude(i => i.User)
+                        .Include(c => c.Enrollments)
+                            .ThenInclude(e => e.Student)
+                                .ThenInclude(s => s.User)
+                );
 
             var entity = result.FirstOrDefault();
             return _mapper.Map<CourseResponseDto>(entity);
