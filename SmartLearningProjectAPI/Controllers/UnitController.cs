@@ -13,7 +13,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         // POST: api/Unit
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddUnit([FromBody] CreateUnitDto dto)
         {
@@ -22,6 +22,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         // GET: api/Unit/{id}
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUnit(int id)
         {
@@ -31,6 +32,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         // GET: api/Unit/course/{courseId}
+        [Authorize]
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetUnitsByCourse(int courseId)
         {
@@ -39,7 +41,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         // PUT: api/Unit/{id}
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUnit(int id, [FromBody] UpdateUnitDto dto)
         {
@@ -55,7 +57,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         // DELETE: api/Unit/{id}
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUnit(int id)
         {

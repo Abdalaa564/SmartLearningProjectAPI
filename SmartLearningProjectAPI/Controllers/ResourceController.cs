@@ -18,6 +18,7 @@
         // 1) ADD RESOURCE (JSON عام)
         // POST: api/Resource
         // =========================
+        [Authorize(Roles = "Instructor,Admin")]
         [HttpPost]
         public async Task<IActionResult> AddResource([FromBody] CreateResourceDto dto)
         {
@@ -132,6 +133,7 @@
         // 6) DELETE
         // DELETE: api/Resource/{id}
         // =========================
+        [Authorize(Roles = "Instructor,Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteResource(int id)
         {

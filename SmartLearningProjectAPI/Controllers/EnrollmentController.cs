@@ -1,8 +1,4 @@
 ﻿
-
-
-using SmartLearning.Application.DTOs.EnrollmentDto;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -23,6 +19,7 @@ namespace SmartLearningProjectAPI.Controllers
         //   "courseId": 5,
         //   "transactionId": "string"
         // }
+        [Authorize]
         [HttpPost("enroll")]
         [ProducesResponseType(typeof(EnrollmentInitiationResponseDto), StatusCodes.Status200OK)]
 

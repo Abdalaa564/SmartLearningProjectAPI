@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SmartLearning.Application.DTOs.QuizDto;
-
+﻿
 namespace SmartLearningProjectAPI.Controllers
 {
 	[Route("api/[controller]")]
@@ -16,8 +13,9 @@ namespace SmartLearningProjectAPI.Controllers
 			_studentService = studentService;
 		}
 
-		// GET: api/Quiz/{id}
-		[HttpGet("{id}")]
+        // GET: api/Quiz/{id}
+        [Authorize(Roles = "Instructor,Admin")]
+        [HttpGet("{id}")]
 		public async Task<IActionResult> GetQuizById(int id)
 		{
 			var quiz = await _quizService.GetQuizByIdAsync(id);
@@ -28,16 +26,18 @@ namespace SmartLearningProjectAPI.Controllers
 			return Ok(quiz);
 		}
 
-		// GET: api/Quiz/lesson/{lessonId}
-		[HttpGet("lesson/{lessonId}")]
+        // GET: api/Quiz/lesson/{lessonId}
+        [Authorize(Roles = "Instructor,Admin")]
+        [HttpGet("lesson/{lessonId}")]
 		public async Task<IActionResult> GetQuizzesByLessonId(int lessonId)
 		{
 			var quizzes = await _quizService.GetQuizzesByLessonIdAsync(lessonId);
 			return Ok(quizzes);
 		}
 
-		// POST: api/Quiz/start/{quizId}
-		[HttpPost("start/{quizId}")]
+        // POST: api/Quiz/start/{quizId}
+        [Authorize]
+        [HttpPost("start/{quizId}")]
 		public async Task<IActionResult> StartQuiz(int quizId)
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -55,7 +55,7 @@ namespace SmartLearningProjectAPI.Controllers
 
 		// POST: api/Quiz
 		[HttpPost]
-		//[Authorize(Roles = "Instructor")]
+		[Authorize(Roles = "Instructor")]
 		public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto quizDto)
 		{
 			if (!ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace SmartLearningProjectAPI.Controllers
 
 		// POST: api/Quiz/question
 		[HttpPost("question")]
-		//[Authorize(Roles = "Instructor")]
+		[Authorize(Roles = "Instructor")]
 		public async Task<IActionResult> AddQuestion([FromBody] CreateQuestionDto questionDto)
 		{
 			if (!ModelState.IsValid)
@@ -107,9 +107,9 @@ namespace SmartLearningProjectAPI.Controllers
 		}
 
 		// DELETE: api/Quiz/question/{id}
+        [Authorize(Roles = "Instructor,Admin")]
 		[HttpDelete("question/{id}")]
-		[Authorize(Roles = "Instructor")]
-		public async Task<IActionResult> DeleteQuestion(int id)
+        public async Task<IActionResult> DeleteQuestion(int id)
 		{
 			var result = await _quizService.DeleteQuestionAsync(id);
 
@@ -120,8 +120,8 @@ namespace SmartLearningProjectAPI.Controllers
 		}
 
 		// POST: api/Quiz/submit-answer
-		[HttpPost("submit-answer")]
 		[Authorize(Roles = "Student")]
+		[HttpPost("submit-answer")]
 		public async Task<IActionResult> SubmitAnswer([FromBody] SubmitAnswerDto answerDto)
 		{
 			if (!ModelState.IsValid)
@@ -141,8 +141,8 @@ namespace SmartLearningProjectAPI.Controllers
 		}
 
 		// GET: api/Quiz/result/{quizId}
+		[Authorize]
 		[HttpGet("result/{quizId}")]
-		[Authorize(Roles = "Student")]
 		public async Task<IActionResult> GetQuizResult(int quizId)
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -157,9 +157,9 @@ namespace SmartLearningProjectAPI.Controllers
 
 			return Ok(result);
 		}
-		[HttpGet("StudentGrades")]
-		[Authorize]
 
+		[Authorize]
+		[HttpGet("StudentGrades")]
 		public async Task<IActionResult> GetStudentGrades()
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -170,9 +170,10 @@ namespace SmartLearningProjectAPI.Controllers
 			var result = await _quizService.GetStudentGradesAsync(userId);
 			return Ok(result);
 		}
+
 		// GET: api/Quiz/all
-		[HttpGet("all")]
 		[Authorize]
+		[HttpGet("all")]
 		public async Task<IActionResult> GetAllQuizzes()
 		{
 			var quizzes = await _quizService.GetAllQuizzesAsync();

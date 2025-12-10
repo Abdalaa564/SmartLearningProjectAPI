@@ -310,39 +310,42 @@ namespace SmartLearning.Application.Services
 
 			return _mapper.Map<List<QuizDetailsDto>>(quizzes.ToList());
 		}
-		public async Task<string> GenerateAiReportAsync(QuizResultDto result)
-		{
+        public async Task<string> GenerateAiReportAsync(QuizResultDto result)
+        {
 			var prompt = $@"
-			اكتب تقرير ذكي للطالب عن أدائه في الامتحان:		
-			اسم الكويز 	: {result.Quiz_Name}		
-			الدرجة الكلية	: {result.TotalMarks}
-			الدرجة التي حصل عليها	: {result.ObtainedMarks}
-			النسبة المئوية	: {result.Percentage}%
-			عدد الأسئلة	: {result.TotalQuestions}
-			عدد الأجوبة الصحيحة	: {result.CorrectAnswers}
-			عدد الأخطاء	: {result.TotalQuestions - result.CorrectAnswers}
-			تفاصيل إجابات الطالب	:
-			{string.Join("\n", result.Answers.Select(a =>
-					$"السؤال: {a.Question_Text} | اجابة الطالب: {a.Choice_Text} | {(a.Is_Correct ? "صحيحة" : "خطأ")}"))}
-";
+				Write a smart and detailed report for the student about their exam performance:
+	
+				Quiz Name: {result.Quiz_Name}
+				Total Marks: {result.TotalMarks}
+				Marks Obtained: {result.ObtainedMarks}
+				Percentage: {result.Percentage}%
+				Total Questions: {result.TotalQuestions}
+				Correct Answers: {result.CorrectAnswers}
+				Wrong Answers: {result.TotalQuestions - result.CorrectAnswers}
+	
+				Student Answers Details:
+				{string.Join("\n", result.Answers.Select(a =>
+									$"Question: {a.Question_Text} | Student Answer: {a.Choice_Text} | {(a.Is_Correct ? "Correct" : "Incorrect")}"
+								))}
+				";
 
-			// إنشاء عميل OpenAI الجديد
-			var client = new ChatClient(
-				model: "gpt-4o-mini",
-				apiKey: $"{config["OpenAI:ApiKey"]}" 
-			);
 
-			// إنشاء رسالة المستخدم
-			var userMessage = new UserChatMessage(prompt);
+            var client = new ChatClient(
+                model: "gpt-4o-mini",
+                apiKey: $"{config["OpenAI:ApiKey"]}"
+            );
 
-			// استدعاء الـ Chat Completion
-			ChatCompletion response = await client.CompleteChatAsync(userMessage);
 
-			// جلب النص النهائي
-			string aiReport = response.Content[0].Text;
+            var userMessage = new UserChatMessage(prompt);
 
-			return aiReport;
-		}
 
-	}
+            ChatCompletion response = await client.CompleteChatAsync(userMessage);
+
+
+            string aiReport = response.Content[0].Text;
+
+            return aiReport;
+        }
+
+    }
 }

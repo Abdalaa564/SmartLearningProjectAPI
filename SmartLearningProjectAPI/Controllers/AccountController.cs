@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Core.Enums;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]

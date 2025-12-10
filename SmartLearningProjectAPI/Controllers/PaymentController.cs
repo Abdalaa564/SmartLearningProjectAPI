@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SmartLearning.Application.DTOs.PaymentDto;
 
 namespace SmartLearningProjectAPI.Controllers
 {

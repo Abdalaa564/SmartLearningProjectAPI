@@ -4,11 +4,14 @@ global using Microsoft.EntityFrameworkCore.Storage;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Identity;
 
+global using System.IdentityModel.Tokens.Jwt;
 global using System.Collections.Concurrent;
 global using System.Linq.Expressions;
 global using System.Net.Http.Headers;
+global using System.Security.Claims;
 global using System.Net.Http.Json;
 global using System.Text;
 global using System.Collections;

@@ -1,6 +1,4 @@
 ﻿
-using SmartLearning.Application.DTOs.MeetingDto;
-
 namespace SmartLearningProjectAPI.Controllers
 {
     [Route("api/[controller]")]
