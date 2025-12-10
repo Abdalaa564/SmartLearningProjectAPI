@@ -157,15 +157,20 @@ namespace SmartLearningProjectAPI.Controllers
 
             return Ok(instructor);
         }
-[HttpPost("logout")]
-[Authorize]
-public async Task<IActionResult> Logout()
-{
-    await _signInManager.SignOutAsync();
-    return Ok(new { message = "Logout successful" });
-}
+
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { message = "Logout successful" });
+        }
     }
 }
+
+
 
 
 

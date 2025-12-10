@@ -219,32 +219,24 @@ namespace SmartLearning.Application.Services
             if (enrollment == null)
                 return null;
 
-            var latestPayment = enrollment.Payments?.OrderByDescending(p => p.Payment_Date).FirstOrDefault();
+         //   var latestPayment = enrollment.Payments?.OrderByDescending(p => p.Payment_Date).FirstOrDefault();
 
-            return new EnrollmentDetailsDto
-            {
-                EnrollId = enrollment.Enroll_Id,
-                UserId = enrollment.StudentId,
-                StudentEmail = enrollment.Student?.User?.Email ?? string.Empty,
-                StudentPhone = enrollment.Student?.User?.PhoneNumber,
-                StudentName = enrollment.Student?.User?.UserName,
-                CourseId = enrollment.Crs_Id,
-                CourseName = enrollment.Course?.Crs_Name ?? string.Empty,
-                CoursePrice = enrollment.Course?.Price ?? 0,
-                EnrollDate = enrollment.Enroll_Date,
-                PaidAmount = enrollment.Paid_Amount,
-                PaymentStatus = latestPayment?.Status,
-                TransactionId = latestPayment?.Transaction_Id,
-                PaymentDate = latestPayment?.Payment_Date
-            };
+            return _mapper.Map<EnrollmentDetailsDto>(enrollment);
         }
 
         public async Task<bool> IsStudentEnrolledAsync(int userId, int courseId)
         {
             var enrollments = await _unitOfWork.Repository<Enrollment>()
-                 .FindAsync(e => e.StudentId == userId && e.Crs_Id == courseId);
+        .FindAsync(e => e.StudentId == userId && e.Crs_Id == courseId,
+            q => q.Include(e => e.Payments));
 
-            return enrollments.Any();
+            var enrollment = enrollments.FirstOrDefault();
+
+            if (enrollment == null)
+                return false;
+
+            // Must have completed payment
+            return enrollment.Payments.Any(p => p.Status == "Completed");
         }
         private string GenerateTransactionId()
         {
@@ -365,7 +357,8 @@ namespace SmartLearning.Application.Services
         public async Task<EnrollmentStatusDto> GetEnrollmentStatusAsync(string transactionId)
         {
             var payments = await _unitOfWork.Repository<Payment>()
-                .FindAsync(p => p.Transaction_Id == transactionId);
+                .FindAsync(p => p.Transaction_Id == transactionId, 
+                           p => p.Enrollment);
             var payment = payments.FirstOrDefault();
 
             if (payment == null)
@@ -373,53 +366,28 @@ namespace SmartLearning.Application.Services
                 return null;
             }
 
-            var enrollment = await _unitOfWork.Repository<Enrollment>()
-                .GetByIdAsync(payment.Enroll_Id);
+            //var enrollment = await _unitOfWork.Repository<Enrollment>()
+            //    .GetByIdAsync(payment.Enroll_Id);
 
-            return new EnrollmentStatusDto
-            {
-                EnrollmentId = enrollment.Enroll_Id,
-                TransactionId = transactionId,
-                PaymentStatus = payment.Status,
-                Amount = payment.Amount,
-                PaymentDate = payment.Payment_Date
-            };
+            return _mapper.Map<EnrollmentStatusDto>(payment);
         }
 
         public async Task<EnrollmentDetailsDto> GetEnrollmentDetailsAsync(int enrollmentId)
         {
-            var enrollment = await _unitOfWork.Repository<Enrollment>()
-                .GetByIdAsync(enrollmentId);
+            var enrollments = await _unitOfWork.Repository<Enrollment>()
+        .FindAsync(
+            e => e.Enroll_Id == enrollmentId,
+            e => e.Student,
+            e => e.Student.User,
+            e => e.Course,
+            e => e.Payments
+        );
 
+            var enrollment = enrollments.FirstOrDefault();
             if (enrollment == null)
                 return null;
 
-            var student = await _unitOfWork.Repository<Student>()
-                .GetByIdAsync(enrollment.StudentId);
-
-            var course = await _unitOfWork.Repository<Course>()
-                .GetByIdAsync(enrollment.Crs_Id);
-
-            var payments = await _unitOfWork.Repository<Payment>()
-                .FindAsync(p => p.Enroll_Id == enrollmentId);
-            var latestPayment = payments.OrderByDescending(p => p.Payment_Date).FirstOrDefault();
-
-            return new EnrollmentDetailsDto
-            {
-                EnrollId = enrollment.Enroll_Id,
-                UserId = enrollment.StudentId,
-                StudentName = $"{student.FirstName} {student.LastName}",
-                StudentEmail = student.User.Email,
-                StudentPhone = student.PhoneNumber,
-                CourseId = course.Crs_Id,
-                CourseName = course.Crs_Name,
-                CoursePrice = course.Price,
-                EnrollDate = enrollment.Enroll_Date,
-                PaidAmount = enrollment.Paid_Amount,
-                PaymentStatus = latestPayment?.Status,
-                TransactionId = latestPayment?.Transaction_Id,
-                PaymentDate = latestPayment?.Payment_Date
-            };
+            return _mapper.Map<EnrollmentDetailsDto>(enrollment);
         }
     }
 }

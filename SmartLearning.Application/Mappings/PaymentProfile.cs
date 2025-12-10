@@ -23,7 +23,9 @@ namespace SmartLearning.Application.Mappings
                 .ForMember(dest => dest.Transaction_Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Payment_Date, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
-                .ForMember(dest => dest.Gateway_Response, opt => opt.Ignore());
+                .ForMember(dest => dest.Gateway_Response, opt => opt.Ignore())
+                .ForMember(dest => dest.Enroll_Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Payment_Id, opt => opt.Ignore());
 
             CreateMap<Payment, PaymentResponseDto>()
                 .ForMember(dest => dest.PaymentId, opt => opt.MapFrom(src => src.Payment_Id))
