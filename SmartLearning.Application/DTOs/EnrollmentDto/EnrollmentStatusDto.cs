@@ -10,6 +10,7 @@ namespace SmartLearning.Application.DTOs.EnrollmentDto
     {
         //Response for checking enrollment status
         public int EnrollmentId { get; set; }
+        public int CourseId { get; set; }
         public string TransactionId { get; set; } = string.Empty;
         public string PaymentStatus { get; set; } = string.Empty;
         public decimal Amount { get; set; }
