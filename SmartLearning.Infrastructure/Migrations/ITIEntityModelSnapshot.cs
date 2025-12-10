@@ -313,6 +313,41 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("SmartLearning.Core.Model.CourseRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Feedback")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CourseRating");
+                });
+
             modelBuilder.Entity("SmartLearning.Core.Model.Enrollment", b =>
                 {
                     b.Property<int>("Enroll_Id")
@@ -421,7 +456,7 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("UniversityName")
@@ -441,6 +476,41 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Instructors");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.InstructorRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Feedback")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstructorId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("InstructorRating");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>
@@ -902,6 +972,25 @@ namespace SmartLearning.Infrastructure.Migrations
                     b.Navigation("Instructor");
                 });
 
+            modelBuilder.Entity("SmartLearning.Core.Model.CourseRating", b =>
+                {
+                    b.HasOne("SmartLearning.Core.Model.Course", "Course")
+                        .WithMany("CourseRatings")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SmartLearning.Core.Model.Enrollment", b =>
                 {
                     b.HasOne("SmartLearning.Core.Model.Course", "Course")
@@ -955,6 +1044,25 @@ namespace SmartLearning.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartLearning.Core.Model.InstructorRating", b =>
+                {
+                    b.HasOne("SmartLearning.Core.Model.Instructor", "Instructor")
+                        .WithMany("InstructorRatings")
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SmartLearning.Core.Model.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Instructor");
 
                     b.Navigation("User");
                 });
@@ -1120,6 +1228,8 @@ namespace SmartLearning.Infrastructure.Migrations
 
             modelBuilder.Entity("SmartLearning.Core.Model.Course", b =>
                 {
+                    b.Navigation("CourseRatings");
+
                     b.Navigation("Enrollments");
 
                     b.Navigation("Grades");
@@ -1135,6 +1245,8 @@ namespace SmartLearning.Infrastructure.Migrations
             modelBuilder.Entity("SmartLearning.Core.Model.Instructor", b =>
                 {
                     b.Navigation("Courses");
+
+                    b.Navigation("InstructorRatings");
                 });
 
             modelBuilder.Entity("SmartLearning.Core.Model.Lessons", b =>
