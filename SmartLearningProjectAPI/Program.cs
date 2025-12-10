@@ -44,11 +44,14 @@ builder.Services.AddAutoMapper(typeof(PaymentProfile));
 
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<ICourseRatingService, CourseRatingService>();
+builder.Services.AddScoped<IInstructorRatingService, InstructorRatingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 var paymobSettings = new PaymobSettings();
 builder.Configuration.GetSection("Paymob").Bind(paymobSettings);
 builder.Services.AddSingleton(paymobSettings);
 
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 //---- External Services
 builder.Services.AddHttpClient<IChatGPTService, ChatGPTService>();
@@ -148,10 +151,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200", "http://localhost:11796", "http://localhost:9995")
+            //policy.WithOrigins("http://localhost:4200", "http://localhost:5693")
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
+                  .AllowAnyMethod();
+                  //.AllowCredentials();
         });
 });
 

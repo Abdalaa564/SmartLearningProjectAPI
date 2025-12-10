@@ -77,7 +77,8 @@ namespace SmartLearningProjectAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginUserDto loginDto)
         {
-            var user = await userManager.FindByNameAsync(loginDto.Email);
+            //var user = await userManager.FindByNameAsync(loginDto.Email);
+            var user = await userManager.FindByEmailAsync(loginDto.Email);
             if (user == null)
                 return Unauthorized(new { message = "Invalid credentials" });
 

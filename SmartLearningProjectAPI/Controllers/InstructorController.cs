@@ -32,6 +32,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
 
         // POST: api/Instructor
+        [Authorize(Roles = "Instructor")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateInstructorDto dto)
         {
@@ -42,6 +43,8 @@ namespace SmartLearningProjectAPI.Controllers
 
             return Ok(result);
         }
+
+        [Authorize(Roles = "Instructor")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateInstructorDto dto)
         {
@@ -58,6 +61,7 @@ namespace SmartLearningProjectAPI.Controllers
 
 
         // DELETE: api/Instructor/5
+        [Authorize(Roles = "Instructor")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {

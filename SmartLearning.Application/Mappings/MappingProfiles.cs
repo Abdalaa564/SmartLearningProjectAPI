@@ -1,4 +1,5 @@
 ﻿using SmartLearning.Application.DTOs.QuizDto;
+using SmartLearning.Application.DTOs.Rating;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,9 @@ namespace SmartLearning.Application.Mappings
 			.ForMember(dest => dest.QuizName, opt => opt.MapFrom(src => src.Quiz.Quiz_Name))
 			.ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Course.Crs_Name))
 			.ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Value));
+
+			CreateMap<CourseRatingDto, CourseRating>();
+			CreateMap<InstructorRatingDto, InstructorRating>();
 		}
 	}
 }

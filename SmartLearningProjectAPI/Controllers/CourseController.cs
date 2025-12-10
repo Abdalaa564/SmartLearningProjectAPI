@@ -23,6 +23,7 @@ namespace SmartLearningProjectAPI.Controllers
         public async Task<IActionResult> GetById(int id)
             => Ok(await _courseService.GetByIdAsync(id));
 
+        [Authorize(Roles = "Instructor")]
         [HttpPost]
         [Consumes("multipart/form-data")] 
         public async Task<IActionResult> Create([FromForm] AddCourseRequest request)
@@ -67,6 +68,7 @@ namespace SmartLearningProjectAPI.Controllers
             return Ok("Created Successfully");
         }
 
+        [Authorize(Roles = "Instructor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] UpdateCourseDto dto)
         {
@@ -95,7 +97,7 @@ namespace SmartLearningProjectAPI.Controllers
                 : NotFound("Not Found");
         }
 
-
+        [Authorize(Roles = "Instructor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
             => await _courseService.DeleteCourseAsync(id)

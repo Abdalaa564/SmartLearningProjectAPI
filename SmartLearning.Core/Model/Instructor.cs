@@ -49,11 +49,13 @@ namespace SmartLearning.Core.Model
         public string? About { get; set; }          
 
         // 🆕 STATUS علشان approval من الـ Admin
-        public InstructorStatus Status { get; set; } = InstructorStatus.Pending;
+        public InstructorStatus? Status { get; set; } = InstructorStatus.Pending;
 
 
         public ICollection<Course> Courses { get; set; } = new List<Course>();
 
+		public ICollection<InstructorRating> InstructorRatings { get; set; } = new List<InstructorRating>();
 
-    }
+
+	}
 }

@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using OpenAI;
+using OpenAI.Chat;
 using SmartLearning.Application.DTOs.QuizDto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
+
 
 namespace SmartLearning.Application.Services
 {
@@ -12,11 +11,13 @@ namespace SmartLearning.Application.Services
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
+		private readonly IConfiguration config;
 
-		public QuizService(IUnitOfWork unitOfWork, IMapper mapper)
+		public QuizService(IUnitOfWork unitOfWork, IMapper mapper,IConfiguration config)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
+			this.config = config;
 		}
 
 		public async Task<QuizDetailsDto?> GetQuizByIdAsync(int quizId)
@@ -218,8 +219,8 @@ namespace SmartLearning.Application.Services
 						sa => sa.User_Id == userId && sa.Quiz_Id == quizId,
 						includeFunc: sa => sa
 							.Include(x => x.Questions)
-								.ThenInclude(q => q.Choices) 
-							.Include(x => x.Choice) 
+								.ThenInclude(q => q.Choices)
+							.Include(x => x.Choice)
 					);
 
 			if (!studentAnswers.Any())
@@ -267,13 +268,10 @@ namespace SmartLearning.Application.Services
 			}
 
 			await _unitOfWork.CompleteAsync();
-			// ----------------------
-
-
+			result.AiReport = await GenerateAiReportAsync(result);
 
 			return result;
 		}
-
 		public async Task<List<QuizDetailsDto>> GetQuizzesByLessonIdAsync(int lessonId)
 		{
 			var quizzes = await _unitOfWork.Repository<Quiz>()
@@ -299,5 +297,52 @@ namespace SmartLearning.Application.Services
 				);
 			return _mapper.Map<List<StudentGradeDto>>(grades);
 		}
+
+		public async Task<List<QuizDetailsDto>> GetAllQuizzesAsync()
+		{
+
+			var quizzes = await _unitOfWork.Repository<Quiz>()
+				.GetAllAsync(q => q
+					.Include(x => x.Lesson)
+					.Include(x => x.Questions)
+						.ThenInclude(qu => qu.Choices)
+				);
+
+			return _mapper.Map<List<QuizDetailsDto>>(quizzes.ToList());
+		}
+		public async Task<string> GenerateAiReportAsync(QuizResultDto result)
+		{
+			var prompt = $@"
+			اكتب تقرير ذكي للطالب عن أدائه في الامتحان:		
+			اسم الكويز 	: {result.Quiz_Name}		
+			الدرجة الكلية	: {result.TotalMarks}
+			الدرجة التي حصل عليها	: {result.ObtainedMarks}
+			النسبة المئوية	: {result.Percentage}%
+			عدد الأسئلة	: {result.TotalQuestions}
+			عدد الأجوبة الصحيحة	: {result.CorrectAnswers}
+			عدد الأخطاء	: {result.TotalQuestions - result.CorrectAnswers}
+			تفاصيل إجابات الطالب	:
+			{string.Join("\n", result.Answers.Select(a =>
+					$"السؤال: {a.Question_Text} | اجابة الطالب: {a.Choice_Text} | {(a.Is_Correct ? "صحيحة" : "خطأ")}"))}
+";
+
+			// إنشاء عميل OpenAI الجديد
+			var client = new ChatClient(
+				model: "gpt-4o-mini",
+				apiKey: $"{config["OpenAI:ApiKey"]}" 
+			);
+
+			// إنشاء رسالة المستخدم
+			var userMessage = new UserChatMessage(prompt);
+
+			// استدعاء الـ Chat Completion
+			ChatCompletion response = await client.CompleteChatAsync(userMessage);
+
+			// جلب النص النهائي
+			string aiReport = response.Content[0].Text;
+
+			return aiReport;
+		}
+
 	}
 }

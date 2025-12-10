@@ -20,5 +20,9 @@ namespace SmartLearning.Application.Interfaces
 		Task<QuizResultDto?> GetQuizResultAsync(string userId, int quizId);
 		Task<List<QuizDetailsDto>> GetQuizzesByLessonIdAsync(int lessonId);
 		Task<List<StudentGradeDto>> GetStudentGradesAsync(string userId);
+		Task<List<QuizDetailsDto>> GetAllQuizzesAsync();
+
+		Task<string> GenerateAiReportAsync(QuizResultDto result);
+
 	}
 }
