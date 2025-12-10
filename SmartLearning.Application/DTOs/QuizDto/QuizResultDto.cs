@@ -16,5 +16,7 @@ namespace SmartLearning.Application.DTOs.QuizDto
 		public int CorrectAnswers { get; set; }
 		public int TotalQuestions { get; set; }
 		public List<StudentAnswerResultDto> Answers { get; set; } = new List<StudentAnswerResultDto>();
+
+		public string AiReport { get; set; } = string.Empty;
 	}
 }

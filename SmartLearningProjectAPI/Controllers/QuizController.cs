@@ -55,7 +55,7 @@ namespace SmartLearningProjectAPI.Controllers
 
 		// POST: api/Quiz
 		[HttpPost]
-		[Authorize(Roles = "Instructor")]
+		//[Authorize(Roles = "Instructor")]
 		public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto quizDto)
 		{
 			if (!ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace SmartLearningProjectAPI.Controllers
 
 		// POST: api/Quiz/question
 		[HttpPost("question")]
-		[Authorize(Roles = "Instructor")]
+		//[Authorize(Roles = "Instructor")]
 		public async Task<IActionResult> AddQuestion([FromBody] CreateQuestionDto questionDto)
 		{
 			if (!ModelState.IsValid)
