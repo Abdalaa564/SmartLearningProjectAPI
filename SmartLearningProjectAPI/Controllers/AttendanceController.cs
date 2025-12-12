@@ -14,8 +14,8 @@ namespace SmartLearningProjectAPI.Controllers
 
         // الطالب يعمل Check-In للدرس
         [HttpPost("checkin/{lessonId:int}")]
-        // [Authorize(Roles = "Student")] // لو انت مفعّل roles
-        [Authorize]
+         [Authorize(Roles = "Student")] // لو انت مفعّل roles
+       
         public async Task<IActionResult> CheckIn(int lessonId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -29,9 +29,9 @@ namespace SmartLearningProjectAPI.Controllers
             return Ok("Checked in successfully.");
         }
 
-        // الطالب يعمل Check-Out (لو محتاج)
+       
         [HttpPost("checkout/{lessonId:int}")]
-        //  [Authorize(Roles = "Student")]
+          [Authorize(Roles = "Student")]
         [Authorize]
         public async Task<IActionResult> CheckOut(int lessonId)
         {
@@ -47,7 +47,7 @@ namespace SmartLearningProjectAPI.Controllers
         }
         // GET: api/Attendance/lesson/5
         [HttpGet("lesson/{lessonId:int}")]
-       // [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor")]
         [Authorize]
         public async Task<IActionResult> GetLessonAttendance(int lessonId)
         {
