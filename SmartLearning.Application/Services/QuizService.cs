@@ -346,6 +346,17 @@ namespace SmartLearning.Application.Services
 
             return aiReport;
         }
+        public async Task<List<StudentGradeDto>> StudentGradesAsync()
+        {
+            var grades = await _unitOfWork.Repository<Grades>()
+        .GetAllAsync(q => q
+            .Include(x => x.Quiz)
+            .Include(x => x.Course)
+            .Include(x => x.Student) // لو عندك Navigation للطالب
+        );
+
+            return _mapper.Map<List<StudentGradeDto>>(grades);
+        }
 
     }
 }
