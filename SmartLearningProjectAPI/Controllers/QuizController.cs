@@ -14,7 +14,7 @@ namespace SmartLearningProjectAPI.Controllers
 		}
 
         // GET: api/Quiz/{id}
-        [Authorize(Roles = "Instructor,Admin")]
+        [Authorize(Roles = "Instructor,Admin,Student")]
         [HttpGet("{id}")]
 		public async Task<IActionResult> GetQuizById(int id)
 		{
@@ -27,7 +27,7 @@ namespace SmartLearningProjectAPI.Controllers
 		}
 
         // GET: api/Quiz/lesson/{lessonId}
-        [Authorize(Roles = "Instructor,Admin")]
+        [Authorize(Roles = "Instructor,Admin,Student")]
         [HttpGet("lesson/{lessonId}")]
 		public async Task<IActionResult> GetQuizzesByLessonId(int lessonId)
 		{
@@ -183,5 +183,12 @@ namespace SmartLearningProjectAPI.Controllers
 
 			return Ok(quizzes);
 		}
-	}
+        [HttpGet("GetAllGrades")]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> StudentGradesAsync()
+        {
+            var result = await _quizService.StudentGradesAsync();
+            return Ok(result);
+        }
+    }
 }
