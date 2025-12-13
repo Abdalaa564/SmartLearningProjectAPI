@@ -141,6 +141,11 @@ The project contains 17 main entities:
 - Manage questions and choices
 - Submit quizzes
 - Grade and display results
+- **AI Performance Report**:
+  - Generates a "Smart Report" using **OpenAI (GPT-4o)**
+  - Analyzes marks, percentage, and correct/wrong answers
+  - Provides detailed feedback on student mistakes
+  - Suggests learning improvements
 
 ### 6. **InstructorController**
 - Manage instructor data
@@ -172,19 +177,33 @@ The project contains 17 main entities:
 - View attendance records
 - Attendance statistics
 
-### 12. **ChatController**
+### 12. **ChatController** (AI Integrated)
 - Manage messages and conversations
+- **AI Integration**: Endpoints for ChatGPT interaction
+- **PDF Analysis**: Endpoints for uploading and summarizing PDFs via AI
 - Group and individual chat
 
-### 13. **StreamController**
-- Manage live streaming
-- Integration with streaming services
+### 13. **PaymentController**
+- Process course payments
+- Verify payment status
+- Integration with Stripe/Payment Gateway
+- Payment history and records
 
-### 14. **RolesController**
+### 14. **Rating Controllers** (Course & Instructor)
+- **CourseRatingController**: Manage course reviews and ratings
+- **InstructorRatingController**: Manage instructor feedback
+- Calculate average ratings
+
+### 15. **StreamController**
+- Manage live streaming
+- Integration with Stream.io API
+- Video token generation
+
+### 16. **RolesController**
 - Manage roles and permissions
 - Assign roles to users
 
-### 15. **WeatherForecastController**
+### 17. **WeatherForecastController**
 - Demo controller (can be removed in production)
 
 ## ⚙️ Setup and Installation
@@ -266,9 +285,18 @@ Authorization: Bearer {your-jwt-token}
 
 ### Available Roles
 
-- **Admin** - Full permissions
-- **Instructor** - Manage courses and content
-- **Student** - Access courses and content
+- **Admin** - Full system control and user management
+- **Instructor** - Course creation, content management, and student grading
+- **Student** - Course access, quiz taking, and progress tracking
+- **User** - Basic authenticated access (common permissions)
+
+**Note**: Security and Role checks are implemented at the Controller and Action levels to ensure data integrity and security across the entire API.
+
+### ✅ Server-Side Validation
+The API implements strict data validation rules using **Data Annotations** and **Fluent Validation**:
+- **DTO Validation**: All incoming requests (DTOs) are validated for required fields, data types, and constraints.
+- **Model Integrity**: Database models strictly enforce relationships and constraints.
+- **Secure Handling**: Invalid data is rejected with appropriate HTTP 400 Bad Request responses.
 
 
 ## 📊 Logging and Monitoring

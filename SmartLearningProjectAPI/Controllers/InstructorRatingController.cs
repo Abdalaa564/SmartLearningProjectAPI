@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SmartLearning.Application.DTOs.Rating;
-
+﻿
 namespace SmartLearningProjectAPI.Controllers
 {
 	[Route("api/[controller]")]

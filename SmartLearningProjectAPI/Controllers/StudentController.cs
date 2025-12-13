@@ -38,8 +38,7 @@ namespace SmartLearningProjectAPI.Controllers
 
         }
 
-        //[Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{userId}")]
         public async Task<ActionResult> DeleteStudent(string userId)
         {
@@ -54,6 +53,8 @@ namespace SmartLearningProjectAPI.Controllers
                 message = "Student deleted successfully"
             });
         }
+
+        [Authorize]
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<StudentProfileDto>>> GetAllStudents()
         {
